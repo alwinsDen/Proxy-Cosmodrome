@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		ED2F2C402FA79795008B41F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ED2F2C3F2FA79795008B41F6 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		ED2F2C232FA790D3008B41F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Proxy-Cosmodrome.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED2F2C3F2FA79795008B41F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		ED2F2C0C2FA790D3008B41F6 = {
 			isa = PBXGroup;
 			children = (
+				ED2F2C3F2FA79795008B41F6 /* README.md */,
 				ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */,
 				ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */,
 				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED2F2C402FA79795008B41F6 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
