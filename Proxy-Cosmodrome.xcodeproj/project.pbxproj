@@ -1,0 +1,578 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		ED2F2C232FA790D3008B41F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED2F2C0D2FA790D3008B41F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED2F2C142FA790D3008B41F6;
+			remoteInfo = "Proxy-Cosmodrome";
+		};
+		ED2F2C2D2FA790D3008B41F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED2F2C0D2FA790D3008B41F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED2F2C142FA790D3008B41F6;
+			remoteInfo = "Proxy-Cosmodrome";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Proxy-Cosmodrome.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Proxy-Cosmodrome";
+			sourceTree = "<group>";
+		};
+		ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Proxy-CosmodromeTests";
+			sourceTree = "<group>";
+		};
+		ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Proxy-CosmodromeUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ED2F2C122FA790D3008B41F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C1F2FA790D3008B41F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C292FA790D3008B41F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ED2F2C0C2FA790D3008B41F6 = {
+			isa = PBXGroup;
+			children = (
+				ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */,
+				ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */,
+				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
+				ED2F2C162FA790D3008B41F6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ED2F2C162FA790D3008B41F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */,
+				ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */,
+				ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ED2F2C142FA790D3008B41F6 /* Proxy-Cosmodrome */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED2F2C362FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-Cosmodrome" */;
+			buildPhases = (
+				ED2F2C112FA790D3008B41F6 /* Sources */,
+				ED2F2C122FA790D3008B41F6 /* Frameworks */,
+				ED2F2C132FA790D3008B41F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */,
+			);
+			name = "Proxy-Cosmodrome";
+			packageProductDependencies = (
+			);
+			productName = "Proxy-Cosmodrome";
+			productReference = ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */;
+			productType = "com.apple.product-type.application";
+		};
+		ED2F2C212FA790D3008B41F6 /* Proxy-CosmodromeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED2F2C392FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-CosmodromeTests" */;
+			buildPhases = (
+				ED2F2C1E2FA790D3008B41F6 /* Sources */,
+				ED2F2C1F2FA790D3008B41F6 /* Frameworks */,
+				ED2F2C202FA790D3008B41F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED2F2C242FA790D3008B41F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */,
+			);
+			name = "Proxy-CosmodromeTests";
+			packageProductDependencies = (
+			);
+			productName = "Proxy-CosmodromeTests";
+			productReference = ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ED2F2C2B2FA790D3008B41F6 /* Proxy-CosmodromeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED2F2C3C2FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-CosmodromeUITests" */;
+			buildPhases = (
+				ED2F2C282FA790D3008B41F6 /* Sources */,
+				ED2F2C292FA790D3008B41F6 /* Frameworks */,
+				ED2F2C2A2FA790D3008B41F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED2F2C2E2FA790D3008B41F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
+			);
+			name = "Proxy-CosmodromeUITests";
+			packageProductDependencies = (
+			);
+			productName = "Proxy-CosmodromeUITests";
+			productReference = ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ED2F2C0D2FA790D3008B41F6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					ED2F2C142FA790D3008B41F6 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					ED2F2C212FA790D3008B41F6 = {
+						CreatedOnToolsVersion = 26.4.1;
+						TestTargetID = ED2F2C142FA790D3008B41F6;
+					};
+					ED2F2C2B2FA790D3008B41F6 = {
+						CreatedOnToolsVersion = 26.4.1;
+						TestTargetID = ED2F2C142FA790D3008B41F6;
+					};
+				};
+			};
+			buildConfigurationList = ED2F2C102FA790D3008B41F6 /* Build configuration list for PBXProject "Proxy-Cosmodrome" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ED2F2C0C2FA790D3008B41F6;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = ED2F2C162FA790D3008B41F6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ED2F2C142FA790D3008B41F6 /* Proxy-Cosmodrome */,
+				ED2F2C212FA790D3008B41F6 /* Proxy-CosmodromeTests */,
+				ED2F2C2B2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ED2F2C132FA790D3008B41F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C202FA790D3008B41F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C2A2FA790D3008B41F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ED2F2C112FA790D3008B41F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C1E2FA790D3008B41F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED2F2C282FA790D3008B41F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ED2F2C242FA790D3008B41F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED2F2C142FA790D3008B41F6 /* Proxy-Cosmodrome */;
+			targetProxy = ED2F2C232FA790D3008B41F6 /* PBXContainerItemProxy */;
+		};
+		ED2F2C2E2FA790D3008B41F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED2F2C142FA790D3008B41F6 /* Proxy-Cosmodrome */;
+			targetProxy = ED2F2C2D2FA790D3008B41F6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		ED2F2C342FA790D3008B41F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		ED2F2C352FA790D3008B41F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = H825RTQ868;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		ED2F2C372FA790D3008B41F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		ED2F2C382FA790D3008B41F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		ED2F2C3A2FA790D3008B41F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-CosmodromeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Proxy-Cosmodrome.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Proxy-Cosmodrome";
+			};
+			name = Debug;
+		};
+		ED2F2C3B2FA790D3008B41F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-CosmodromeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Proxy-Cosmodrome.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Proxy-Cosmodrome";
+			};
+			name = Release;
+		};
+		ED2F2C3D2FA790D3008B41F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-CosmodromeUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Proxy-Cosmodrome";
+			};
+			name = Debug;
+		};
+		ED2F2C3E2FA790D3008B41F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H825RTQ868;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-CosmodromeUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Proxy-Cosmodrome";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ED2F2C102FA790D3008B41F6 /* Build configuration list for PBXProject "Proxy-Cosmodrome" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED2F2C342FA790D3008B41F6 /* Debug */,
+				ED2F2C352FA790D3008B41F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED2F2C362FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-Cosmodrome" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED2F2C372FA790D3008B41F6 /* Debug */,
+				ED2F2C382FA790D3008B41F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED2F2C392FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-CosmodromeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED2F2C3A2FA790D3008B41F6 /* Debug */,
+				ED2F2C3B2FA790D3008B41F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED2F2C3C2FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-CosmodromeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED2F2C3D2FA790D3008B41F6 /* Debug */,
+				ED2F2C3E2FA790D3008B41F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ED2F2C0D2FA790D3008B41F6 /* Project object */;
+}
