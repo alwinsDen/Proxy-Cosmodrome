@@ -1,0 +1,15 @@
+{
+  "originHash" : "fc76822e4354e6ebf219b873bcc175415f4fdc6ccb4a71b08f2bd0ea46a01e90",
+  "pins" : [
+    {
+      "identity" : "fontawesomeswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onmyway133/FontAwesomeSwiftUI",
+      "state" : {
+        "revision" : "c3d666d61fd5499f3965ac7a03757c3588534081",
+        "version" : "1.0.5"
+      }
+    }
+  ],
+  "version" : 3
+}

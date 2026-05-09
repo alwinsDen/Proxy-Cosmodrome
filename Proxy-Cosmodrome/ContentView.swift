@@ -6,16 +6,32 @@
 //
 
 import SwiftUI
+import FontAwesomeSwiftUI
 
 struct ContentView: View {
+    
+    @State private var selectedItem : String = "Apps"
+    let selectedItemsBinding = ["Apps","Server","Docker"]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Proxy Cosmodrome. Networking interface.")
+        NavigationSplitView {
+            List(selectedItemsBinding, id: \.self, selection: $selectedItem) { item in
+                Text(item)
+            }
+            .navigationTitle("Menu")
+        } detail: {
+            Text("Select an item")
         }
-        .padding()
+        .navigationTitle("Proxy Cosmodrome Manager")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {} label: {
+                    Text("star")
+                    Image(systemName: "star")
+                        .font(.system(size: 10))
+                }
+            }
+        }
     }
 }
 

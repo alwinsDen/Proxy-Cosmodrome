@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		ED2F2C402FA79795008B41F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ED2F2C3F2FA79795008B41F6 /* README.md */; };
+		EDCADCB22FAF27FB007482FC /* FontAwesomeSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EDCADCB12FAF27FB007482FC /* FontAwesomeSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDCADCB22FAF27FB007482FC /* FontAwesomeSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 				ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */,
 				ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */,
 				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
+				EDCADCB02FAF27F7007482FC /* Frameworks */,
 				ED2F2C162FA790D3008B41F6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -96,6 +99,13 @@
 				ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EDCADCB02FAF27F7007482FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +128,7 @@
 			);
 			name = "Proxy-Cosmodrome";
 			packageProductDependencies = (
+				EDCADCB12FAF27FB007482FC /* FontAwesomeSwiftUI */,
 			);
 			productName = "Proxy-Cosmodrome";
 			productReference = ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */;
@@ -201,6 +212,9 @@
 			);
 			mainGroup = ED2F2C0C2FA790D3008B41F6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EDCADCAF2FAF264B007482FC /* XCRemoteSwiftPackageReference "FontAwesomeSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = ED2F2C162FA790D3008B41F6 /* Products */;
 			projectDirPath = "";
@@ -580,6 +594,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EDCADCAF2FAF264B007482FC /* XCRemoteSwiftPackageReference "FontAwesomeSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onmyway133/FontAwesomeSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EDCADCB12FAF27FB007482FC /* FontAwesomeSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDCADCAF2FAF264B007482FC /* XCRemoteSwiftPackageReference "FontAwesomeSwiftUI" */;
+			productName = FontAwesomeSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = ED2F2C0D2FA790D3008B41F6 /* Project object */;
 }
