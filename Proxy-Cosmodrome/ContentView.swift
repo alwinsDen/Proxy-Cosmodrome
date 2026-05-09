@@ -16,6 +16,86 @@ struct MenuItem: Identifiable, Hashable {
     let color: Color
 }
 
+struct Project: Identifiable {
+    let id = UUID()
+    let title: String
+    let description: String
+    let type: String
+    let created_at: String
+}
+
+struct MusicStyleListView: View {
+
+    private let projects: [Project] = [
+        Project(title: "SAAS web app", description: "weekend test01", type: "react", created_at: "3:20"),
+        Project(title: "Claude code", description: "test 02", type: "react", created_at: "3:23", ),
+        Project(title: "Proxy-test", description: "simple web app", type: "react", created_at: "2:54", ),
+    ]
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(Array(projects.enumerated()), id: \.element.id) { index, project in
+                    HStack(spacing: 12) {
+                        Text("\(index + 1)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 24, alignment: .trailing)
+
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(.clear)
+                            .frame(width: 40, height: 40)
+                            .overlay {
+                                Image(systemName: "music.note")
+                                    .foregroundStyle(.white)
+                                    .font(.caption)
+                            }
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(project.title)
+                                .font(.body)
+                                .lineLimit(1)
+                            Text(project.description)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+
+                        Spacer()
+
+                        Text(project.type)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .frame(maxWidth: 140, alignment: .leading)
+
+                        Text(project.created_at)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    }
+                    .padding(.vertical, 2)
+                }
+            } header: {
+                HStack(spacing: 12) {
+                    Text("#")
+                        .frame(width: 24, alignment: .trailing)
+                    Text("Project Definition")
+                        .padding(.leading, 52)
+                    Spacer()
+                    Text("Type")
+                        .frame(maxWidth: 115, alignment: .leading)
+                    Text("created at")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+        }
+        .listStyle(.inset)
+        .navigationTitle("Application Manager")
+    }
+}
+
 struct ContentView: View {
 
     private let menuItems: [MenuItem] = [
@@ -25,6 +105,10 @@ struct ContentView: View {
     ]
 
     @State private var selectedItem: MenuItem.ID?
+
+    private var selectedMenuItem: MenuItem? {
+        menuItems.first { $0.id == selectedItem }
+    }
 
     var body: some View {
         NavigationSplitView {
@@ -50,14 +134,21 @@ struct ContentView: View {
             .navigationTitle("Menu")
             .frame(idealWidth: 150)
         } detail: {
-            if let selectedItem, let item = menuItems.first(where: { $0.id == selectedItem }) {
-                Text("Selected: \(item.name)")
+            if selectedMenuItem?.name == "Apps" || selectedItem == nil {
+                MusicStyleListView()
             } else {
-                Text("Select an item")
+                ContentUnavailableView("Select an item", systemImage: "sidebar.left", description: Text("Choose an item from the sidebar."))
             }
         }
         .navigationTitle("Proxy Cosmodrome Manager")
         .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {} label: {
+                    Text("Onboard app")
+                    Image(systemName: "plus")
+                        .font(.system(size: 10))
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {} label: {
                     Text("star")

@@ -51,6 +51,11 @@
 			path = "Proxy-CosmodromeUITests";
 			sourceTree = "<group>";
 		};
+		EDD5A08A2FAFD43F00562E5A /* Proxy-CosmodromeRustCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Proxy-CosmodromeRustCore";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +93,7 @@
 				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
 				EDCADCB02FAF27F7007482FC /* Frameworks */,
 				ED2F2C162FA790D3008B41F6 /* Products */,
+				EDD5A08A2FAFD43F00562E5A /* Proxy-CosmodromeRustCore */,
 			);
 			sourceTree = "<group>";
 		};
