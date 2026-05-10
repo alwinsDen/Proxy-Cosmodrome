@@ -24,7 +24,6 @@ jobs:
 
     - name: Build Rust
       run: |
-        cd Proxy-CosmodromeRustCore
         cargo build --target aarch64-apple-darwin --release
 
     - name: Build Xcode project
