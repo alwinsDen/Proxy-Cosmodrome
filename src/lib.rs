@@ -12,5 +12,5 @@ mod ffi {
 }
 
 fn print_hello_rusted() {
-    println!("Hello from Rusts")
+    println!("Created by alwin, alwinsden.com")
 }
