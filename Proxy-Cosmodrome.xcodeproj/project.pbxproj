@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		ED2F2C402FA79795008B41F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ED2F2C3F2FA79795008B41F6 /* README.md */; };
 		EDCADCB22FAF27FB007482FC /* FontAwesomeSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EDCADCB12FAF27FB007482FC /* FontAwesomeSwiftUI */; };
+		EDF7E2702FB059AE005043AB /* Proxy-CosmodromeRustCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */; };
+		EDF7E2712FB059AE005043AB /* SwiftBridgeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +35,11 @@
 		ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C3F2FA79795008B41F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EDF7E0B02FB056F6005043AB /* bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bridging-header.h"; sourceTree = "<group>"; };
+		EDF7E26A2FB059AE005043AB /* Proxy-CosmodromeRustCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-CosmodromeRustCore.h"; sourceTree = "<group>"; };
+		EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Proxy-CosmodromeRustCore.swift"; sourceTree = "<group>"; };
+		EDF7E26D2FB059AE005043AB /* SwiftBridgeCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftBridgeCore.h; sourceTree = "<group>"; };
+		EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridgeCore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -49,11 +56,6 @@
 		ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Proxy-CosmodromeUITests";
-			sourceTree = "<group>";
-		};
-		EDD5A08A2FAFD43F00562E5A /* Proxy-CosmodromeRustCore */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Proxy-CosmodromeRustCore";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -87,13 +89,14 @@
 		ED2F2C0C2FA790D3008B41F6 = {
 			isa = PBXGroup;
 			children = (
+				EDF7E26F2FB059AE005043AB /* generated */,
+				EDF7E0B02FB056F6005043AB /* bridging-header.h */,
 				ED2F2C3F2FA79795008B41F6 /* README.md */,
 				ED2F2C172FA790D3008B41F6 /* Proxy-Cosmodrome */,
 				ED2F2C252FA790D3008B41F6 /* Proxy-CosmodromeTests */,
 				ED2F2C2F2FA790D3008B41F6 /* Proxy-CosmodromeUITests */,
 				EDCADCB02FAF27F7007482FC /* Frameworks */,
 				ED2F2C162FA790D3008B41F6 /* Products */,
-				EDD5A08A2FAFD43F00562E5A /* Proxy-CosmodromeRustCore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,6 +117,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EDF7E26C2FB059AE005043AB /* Proxy-CosmodromeRustCore */ = {
+			isa = PBXGroup;
+			children = (
+				EDF7E26A2FB059AE005043AB /* Proxy-CosmodromeRustCore.h */,
+				EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */,
+			);
+			path = "Proxy-CosmodromeRustCore";
+			sourceTree = "<group>";
+		};
+		EDF7E26F2FB059AE005043AB /* generated */ = {
+			isa = PBXGroup;
+			children = (
+				EDF7E26C2FB059AE005043AB /* Proxy-CosmodromeRustCore */,
+				EDF7E26D2FB059AE005043AB /* SwiftBridgeCore.h */,
+				EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */,
+			);
+			path = generated;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -121,6 +143,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = ED2F2C362FA790D3008B41F6 /* Build configuration list for PBXNativeTarget "Proxy-Cosmodrome" */;
 			buildPhases = (
+				EDF7E0712FB054F2005043AB /* Run Script */,
 				ED2F2C112FA790D3008B41F6 /* Sources */,
 				ED2F2C122FA790D3008B41F6 /* Frameworks */,
 				ED2F2C132FA790D3008B41F6 /* Resources */,
@@ -258,11 +281,34 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		EDF7E0712FB054F2005043AB /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\ncd \"${SRCROOT}\"\ncargo build --target aarch64-apple-darwin\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		ED2F2C112FA790D3008B41F6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDF7E2702FB059AE005043AB /* Proxy-CosmodromeRustCore.swift in Sources */,
+				EDF7E2712FB059AE005043AB /* SwiftBridgeCore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,6 +474,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -435,14 +482,17 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/target/aarch64-apple-darwin/debug";
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
+				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "$(SRCROOT)/bridging-header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -460,6 +510,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -467,13 +518,15 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/target/aarch64-apple-darwin/debug";
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
+				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;

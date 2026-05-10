@@ -143,7 +143,9 @@ struct ContentView: View {
         .navigationTitle("Proxy Cosmodrome Manager")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button {} label: {
+                Button {
+                    print_hello_rusted()
+                } label: {
                     Text("Onboard app")
                     Image(systemName: "plus")
                         .font(.system(size: 10))
