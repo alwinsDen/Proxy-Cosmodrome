@@ -1,3 +1,7 @@
 target
 xcuserdata/
 *.DS_STORE
+*.xcscheme
+xcshareddata/xcschemes/
+*.xcscmblueprint
+xcshareddata/
