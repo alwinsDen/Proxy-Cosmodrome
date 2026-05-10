@@ -97,6 +97,19 @@ struct MusicStyleListView: View {
 }
 
 struct ContentView: View {
+    
+    var buildInfo: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let _build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+        
+        #if DEBUG
+        let type = "debug"
+        #else
+        let type = "release"
+        #endif
+        
+        return "v\(version)-\(type)"
+    }
 
     private let menuItems: [MenuItem] = [
         MenuItem(name: "Apps", subtitle: "Manage applications", iconName: "square.grid.2x2.fill", color: .blue),
@@ -133,6 +146,10 @@ struct ContentView: View {
             }
             .navigationTitle("Menu")
             .frame(idealWidth: 150)
+            Text(buildInfo)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(10)
         } detail: {
             if selectedMenuItem?.name == "Apps" || selectedItem == nil {
                 MusicStyleListView()
