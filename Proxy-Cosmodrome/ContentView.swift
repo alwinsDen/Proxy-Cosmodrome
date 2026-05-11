@@ -44,21 +44,27 @@ struct MusicStyleListView: View {
 
                         RoundedRectangle(cornerRadius: 6)
                             .fill(.clear)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 10, height: 20)
                             .overlay {
-                                Image(systemName: "music.note")
+                                Image(systemName: "play")
                                     .foregroundStyle(.white)
                                     .font(.caption)
                             }
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: 5)
+                        {
                             Text(project.title)
                                 .font(.body)
                                 .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             Text(project.description)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.body)
                                 .lineLimit(1)
+                                .foregroundStyle(.secondary)
+                        }.frame(maxWidth: 120)
+
+                        HStack{
+                            Text("Hi there")
                         }
 
                         Spacer()
@@ -67,12 +73,14 @@ struct MusicStyleListView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
-                            .frame(maxWidth: 140, alignment: .leading)
+                            .frame(maxWidth: 70, alignment: .leading)
+//                            .background(.yellow)
 
                         Text(project.created_at)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .monospacedDigit()
+                            .frame(maxWidth: 50, alignment: .trailing)
                     }
                     .padding(.vertical, 2)
                 }
@@ -81,11 +89,15 @@ struct MusicStyleListView: View {
                     Text("#")
                         .frame(width: 24, alignment: .trailing)
                     Text("Project Definition")
-                        .padding(.leading, 52)
-                    Spacer()
+                        .frame(maxWidth: 140,alignment: .leading)
+                    Text("Runners")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+//                        .background(Color(.red))
                     Text("Type")
-                        .frame(maxWidth: 115, alignment: .leading)
+                        .frame(width: 70, alignment: .leading)
+//                        .background(Color(.blue))
                     Text("created at")
+                        .frame(maxWidth: 50, alignment: .trailing)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -181,4 +193,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .frame(width: 800, height: 600)
 }
