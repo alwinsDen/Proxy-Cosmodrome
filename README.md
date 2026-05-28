@@ -4,13 +4,14 @@ A macOS desktop app that helps you launch and manage applications installed on y
 
 Built with SwiftUI on the frontend and Rust powering the backend logic, connected through `swift-bridge`.
 
+<img width="1045" height="666" alt="image" src="https://github.com/user-attachments/assets/9ef55b2b-dd70-41f2-b85f-ad3d956a49b9" />
+
+## Getting started
 | Requirement | Version |
 |-------------|---------|
 | Xcode | 26.4.1 |
 | macOS | 26.4.1 |
 | rustc | 1.94 |
-
-## Getting started
 
 ```bash
 # 1. Build the Rust backend first
