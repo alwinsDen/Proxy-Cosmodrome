@@ -74,6 +74,8 @@ fn run_command(command: String, working_dir: String) -> String {
         .arg("-l")
         .arg("-c")
         .arg(&full_command)
+        .env_clear()
+        .env("HOME", std::env::var("HOME").unwrap_or_default())
         .output()
     {
         Ok(output) => {
