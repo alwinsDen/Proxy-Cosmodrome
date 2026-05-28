@@ -8,6 +8,20 @@
 import SwiftUI
 import FontAwesomeSwiftUI
 
+extension String {
+    var shellEscaped: String {
+        "'\(replacingOccurrences(of: "'", with: "'\\''"))'"
+    }
+}
+
+struct RunnerInstance: Identifiable, Equatable {
+    let id = UUID()
+    let runnerName: String
+    let projectName: String
+    var output: String
+    var isRunning: Bool
+}
+
 struct MenuItem: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -19,79 +33,161 @@ struct MenuItem: Identifiable, Hashable {
 struct MusicStyleListView: View {
 
     @State private var projects: [ProjectConfig] = []
-    @State private var showEditSheet = false
     @State private var projectToEdit: ProjectConfig?
+    @State private var runnerInstances: [RunnerInstance] = []
+    @State private var selectedInstanceId: UUID?
+    @State private var terminalHeight: CGFloat = 150
 
     var body: some View {
-        List {
-            Section {
-                ForEach(Array(projects.enumerated()), id: \.element.id) { index, project in
-                    HStack(spacing: 12) {
-                        Text("\(index + 1)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .frame(width: 24, alignment: .trailing)
-
-                        VStack(alignment: .leading, spacing: 5)
-                        {
-                            Text(project.name)
-                                .font(.body)
-                                .lineLimit(1)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text(project.description)
-                                .font(.body)
-                                .lineLimit(1)
+        VStack(spacing: 0) {
+            List {
+                Section {
+                    ForEach(Array(projects.enumerated()), id: \.element.id) { index, project in
+                        HStack(spacing: 12) {
+                            Text("\(index + 1)")
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                        }.frame(maxWidth: 140)
+                                .frame(width: 24, alignment: .trailing)
 
-                        HStack{
-                            ProjectRunners(runners: project.runners, onEdit: { projectToEdit = project; showEditSheet = true }, onDelete: { deleteProject(project) })
+                            VStack(alignment: .leading, spacing: 5)
+                            {
+                                Text(project.name)
+                                    .font(.body)
+                                    .lineLimit(1)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text(project.description)
+                                    .font(.body)
+                                    .lineLimit(1)
+                                    .foregroundStyle(.secondary)
+                            }.frame(maxWidth: 140)
+
+                            HStack{
+                                ProjectRunners(runners: project.runners, onRunRunner: { runRunner($0, in: project.location, projectName: project.name, secrets: project.secrets) }, onEdit: { projectToEdit = project }, onDelete: { deleteProject(project) })
+                            }
+
+                            Spacer()
+
+                            Text(project.type)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .frame(maxWidth: 70, alignment: .leading)
+
+                            Text(project.createdAt)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                                .frame(maxWidth: 100, alignment: .trailing)
                         }
-
-                        Spacer()
-
-                        Text(project.type)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .frame(maxWidth: 70, alignment: .leading)
-//                            .background(.yellow)
-
-                        Text(project.createdAt)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
+                        .padding(.vertical, 2)
+                    }
+                } header: {
+                    HStack(spacing: 12) {
+                        Text("#")
+                            .frame(width: 24, alignment: .trailing)
+                        Text("Project Definition")
+                            .frame(maxWidth: 140,alignment: .leading)
+                        Text("Runners")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("Type")
+                            .frame(width: 70, alignment: .leading)
+                        Text("created at")
                             .frame(maxWidth: 100, alignment: .trailing)
                     }
-                    .padding(.vertical, 2)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
-            } header: {
-                HStack(spacing: 12) {
-                    Text("#")
-                        .frame(width: 24, alignment: .trailing)
-                    Text("Project Definition")
-                        .frame(maxWidth: 140,alignment: .leading)
-                    Text("Runners")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-//                        .background(Color(.red))
-                    Text("Type")
-                        .frame(width: 70, alignment: .leading)
-//                        .background(Color(.blue))
-                    Text("created at")
-                        .frame(maxWidth: 100, alignment: .trailing)
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
-        }
-        .listStyle(.inset)
-        .navigationTitle("Application Manager")
-        .onAppear(perform: loadProjects)
-        .sheet(isPresented: $showEditSheet) {
-            if let project = projectToEdit {
+            .listStyle(.inset)
+            .navigationTitle("Application Manager")
+            .onAppear(perform: loadProjects)
+            .sheet(item: $projectToEdit) { project in
                 EditProjectView(project: project) { updated in
                     updateProject(updated)
                 }
+            }
+
+            if !runnerInstances.isEmpty {
+                Rectangle()
+                    .fill(.gray.opacity(0.2))
+                    .frame(height: 5)
+                    .overlay {
+                        Image(systemName: "line.3.horizontal")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let newHeight = terminalHeight - value.translation.height
+                                terminalHeight = max(80, min(500, newHeight))
+                            }
+                    )
+                    .onHover { inside in
+                        if inside {
+                            NSCursor.resizeUpDown.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    }
+
+                VStack(spacing: 0) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 2) {
+                            ForEach(runnerInstances) { instance in
+                                HStack(spacing: 4) {
+                                    Button {
+                                        selectedInstanceId = instance.id
+                                    } label: {
+                                        Text(instance.runnerName)
+                                            .font(.caption)
+                                            .fontWeight(selectedInstanceId == instance.id ? .semibold : .regular)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    Button {
+                                        runnerInstances.removeAll { $0.id == instance.id }
+                                        if selectedInstanceId == instance.id {
+                                            selectedInstanceId = runnerInstances.last?.id
+                                        }
+                                    } label: {
+                                        Image(systemName: "xmark")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(selectedInstanceId == instance.id ? Color.accentColor.opacity(0.15) : Color.clear)
+                                .cornerRadius(4)
+                            }
+                        }
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                    }
+                    .background(Color(NSColor.controlBackgroundColor))
+
+                    if let selectedId = selectedInstanceId,
+                       let instance = runnerInstances.first(where: { $0.id == selectedId }) {
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                Text(instance.output)
+                                    .font(.system(.caption, design: .monospaced))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .textSelection(.enabled)
+                                    .padding(8)
+                                    .id("bottom")
+                            }
+                            .frame(height: terminalHeight)
+                            .background(Color(NSColor.textBackgroundColor))
+                            .onChange(of: runnerInstances) { _, _ in
+                                proxy.scrollTo("bottom", anchor: .bottom)
+                            }
+                        }
+                    }
+                }
+                .overlay(alignment: .top) { Divider() }
             }
         }
     }
@@ -162,6 +258,42 @@ struct MusicStyleListView: View {
               let finalJSON = String(data: finalData, encoding: .utf8) else { return }
 
         save_config(finalJSON)
+    }
+
+    private func runRunner(_ runner: RunnerConfig, in location: String, projectName: String, secrets: [SecretEntry]) {
+        let relevantSecrets = secrets.filter { $0.runnerName.isEmpty || $0.runnerName == runner.name }
+        let secretLog = relevantSecrets.map { "🔑 Injected secret: \($0.key)\n" }.joined()
+        let envPrefix = relevantSecrets.map { "\($0.key)=\($0.value.shellEscaped)" }.joined(separator: " ")
+        let enhancedCommand = envPrefix.isEmpty ? runner.command : "\(envPrefix) \(runner.command)"
+
+        let instance = RunnerInstance(
+            runnerName: runner.name,
+            projectName: projectName,
+            output: "\(secretLog)▶ [\(runner.name)] \(runner.command)\n\n",
+            isRunning: true
+        )
+        runnerInstances.append(instance)
+        selectedInstanceId = instance.id
+
+        guard !location.isEmpty else {
+            if let idx = runnerInstances.firstIndex(where: { $0.id == instance.id }) {
+                runnerInstances[idx].output += "⚠ No project location set\n"
+                runnerInstances[idx].isRunning = false
+            }
+            return
+        }
+
+        let instanceId = instance.id
+        DispatchQueue.global().async {
+            let output = run_command(enhancedCommand, location).toString()
+            DispatchQueue.main.async {
+                if let idx = runnerInstances.firstIndex(where: { $0.id == instanceId }) {
+                    runnerInstances[idx].output += output
+                    if !output.hasSuffix("\n") { runnerInstances[idx].output += "\n" }
+                    runnerInstances[idx].isRunning = false
+                }
+            }
+        }
     }
 }
 

@@ -8,6 +8,7 @@ import SwiftUI
 
 struct ProjectRunners : View {
     var runners: [RunnerConfig] = []
+    var onRunRunner: ((RunnerConfig) -> Void)?
     var onEdit: (() -> Void)?
     var onDelete: () -> Void
 
@@ -21,7 +22,9 @@ struct ProjectRunners : View {
     var body : some View {
         HStack {
             ForEach(Array(runners.enumerated()), id: \.element.id) { index, runner in
-                Button {} label: {
+                Button {
+                    onRunRunner?(runner)
+                } label: {
                     Image(systemName: "play.circle")
                         .font(.system(size: 24))
                         .contentShape(Circle())
@@ -33,12 +36,6 @@ struct ProjectRunners : View {
             Spacer()
             Button{}label: {
                 Image(systemName: "newspaper.circle")
-                    .font(.system(size:24))
-                    .contentShape(Circle())
-            }
-            .buttonStyle(.plain)
-            Button{}label: {
-                Image(systemName: "eye.slash.circle")
                     .font(.system(size:24))
                     .contentShape(Circle())
             }

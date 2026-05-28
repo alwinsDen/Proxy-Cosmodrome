@@ -57,6 +57,8 @@ Note: Unit tests use Swift Testing (`@Test`, `#expect`). UI tests use XCTest (`X
 - `src/` — Rust backend logic (FFI bridge, file I/O, config management)
 - `generated/` — auto-generated bridge bindings (do not edit directly)
 
+**Rust does all OS operations** (file I/O, process execution, networking). **Swift handles UI only** — it calls Rust via FFI for any system interaction.
+
 ## Config persistence
 
 User configuration is stored at `~/.proxy-cosmodrome/default-configs.json`. All file I/O is handled by Rust via FFI.

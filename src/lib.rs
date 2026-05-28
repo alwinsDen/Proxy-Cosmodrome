@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 use std::fs;
+use std::process::Command;
 
 fn config_dir() -> PathBuf {
     dirs::home_dir()
@@ -18,6 +19,7 @@ mod ffi {
         fn get_config_dir() -> String;
         fn load_config() -> String;
         fn save_config(json: String) -> bool;
+        fn run_command(command: String, working_dir: String) -> String;
     }
 
     extern "Swift" {
@@ -62,5 +64,28 @@ fn save_config(json: String) -> bool {
     match fs::write(&file, &json) {
         Ok(_) => true,
         Err(_) => false,
+    }
+}
+
+fn run_command(command: String, working_dir: String) -> String {
+    let full_command = format!("cd \"{}\" && {}", working_dir, command);
+    let shell = std::env::var("SHELL").unwrap_or_else(|_| "zsh".to_string());
+    match Command::new(&shell)
+        .arg("-l")
+        .arg("-c")
+        .arg(&full_command)
+        .output()
+    {
+        Ok(output) => {
+            let mut result = String::new();
+            if !output.stdout.is_empty() {
+                result.push_str(&String::from_utf8_lossy(&output.stdout));
+            }
+            if !output.stderr.is_empty() {
+                result.push_str(&String::from_utf8_lossy(&output.stderr));
+            }
+            result
+        }
+        Err(e) => format!("ERROR: {}\n", e),
     }
 }

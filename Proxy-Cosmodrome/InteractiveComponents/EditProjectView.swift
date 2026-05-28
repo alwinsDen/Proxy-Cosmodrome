@@ -7,6 +7,7 @@ struct EditProjectView: View {
 
     @State private var runners: [RunnerConfig]
     @State private var secrets: [SecretEntry]
+    @State private var location: String
 
     @State private var toastMessage: String?
     @State private var showToast = false
@@ -16,6 +17,7 @@ struct EditProjectView: View {
         self.onSave = onSave
         _runners = State(initialValue: project.runners)
         _secrets = State(initialValue: project.secrets)
+        _location = State(initialValue: project.location)
     }
 
     var body: some View {
@@ -39,6 +41,13 @@ struct EditProjectView: View {
                         LabeledContent("GitHub URL", value: project.githubURL)
                         LabeledContent("Description", value: project.description)
                         LabeledContent("Type", value: project.type)
+                    }
+
+                    Section("Location") {
+                        HStack {
+                            TextField("Project Folder", text: $location)
+                            Button("Browse...", action: selectFolder)
+                        }
                     }
 
                     Section("Runners") {
@@ -135,6 +144,19 @@ struct EditProjectView: View {
         .animation(.easeOut(duration: 0.2), value: showToast)
     }
 
+    private func selectFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.begin { response in
+            if response == .OK, let url = panel.url {
+                location = url.path
+            }
+        }
+    }
+
     private func save() {
         let updated = ProjectConfig(
             id: project.id,
@@ -143,6 +165,7 @@ struct EditProjectView: View {
             githubURL: project.githubURL,
             category: project.category,
             type: project.type,
+            location: location.trimmingCharacters(in: .whitespaces),
             createdAt: project.createdAt,
             secrets: secrets.filter { !$0.key.trimmingCharacters(in: .whitespaces).isEmpty },
             runners: runners.filter { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }

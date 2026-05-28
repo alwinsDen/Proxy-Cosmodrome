@@ -40,23 +40,25 @@ struct ProjectConfig: Identifiable, Codable {
     var githubURL: String
     var category: String = "App"
     var type: String
+    var location: String = ""
     var createdAt: String
     var secrets: [SecretEntry]
     var runners: [RunnerConfig]
 
     enum CodingKeys: String, CodingKey {
-        case id, name, description, type, secrets, runners, category
+        case id, name, description, type, secrets, runners, category, location
         case githubURL = "github_url"
         case createdAt = "created_at"
     }
 
-    init(id: UUID = UUID(), name: String, description: String, githubURL: String, category: String = "App", type: String, createdAt: String, secrets: [SecretEntry], runners: [RunnerConfig]) {
+    init(id: UUID = UUID(), name: String, description: String, githubURL: String, category: String = "App", type: String, location: String = "", createdAt: String, secrets: [SecretEntry], runners: [RunnerConfig]) {
         self.id = id
         self.name = name
         self.description = description
         self.githubURL = githubURL
         self.category = category
         self.type = type
+        self.location = location
         self.createdAt = createdAt
         self.secrets = secrets
         self.runners = runners
@@ -70,6 +72,7 @@ struct ProjectConfig: Identifiable, Codable {
         githubURL = try container.decodeIfPresent(String.self, forKey: .githubURL) ?? ""
         category = try container.decodeIfPresent(String.self, forKey: .category) ?? "App"
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
+        location = try container.decodeIfPresent(String.self, forKey: .location) ?? ""
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
         secrets = try container.decodeIfPresent([SecretEntry].self, forKey: .secrets) ?? []
         runners = try container.decodeIfPresent([RunnerConfig].self, forKey: .runners) ?? []
@@ -94,6 +97,7 @@ struct CreateNewProjectView: View {
     @State private var githubURL = ""
     @State private var description = ""
     @State private var type = ""
+    @State private var location = ""
     @State private var secrets: [SecretEntry] = []
     @State private var runners: [RunnerConfig] = []
 
@@ -176,6 +180,13 @@ struct CreateNewProjectView: View {
                 TextField("GitHub URL", text: $githubURL)
                 TextField("Description", text: $description)
                 TextField("Type", text: $type)
+            }
+
+            Section("Location") {
+                HStack {
+                    TextField("Project Folder", text: $location)
+                    Button("Browse...", action: selectFolder)
+                }
             }
 
             Section("Runners") {
@@ -264,6 +275,21 @@ struct CreateNewProjectView: View {
         }
     }
 
+    // MARK: - Folder Selection
+
+    private func selectFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.begin { response in
+            if response == .OK, let url = panel.url {
+                location = url.path
+            }
+        }
+    }
+
     // MARK: - Save
 
     private func save() {
@@ -302,6 +328,7 @@ struct CreateNewProjectView: View {
             githubURL: trimmedURL,
             category: selectedCategory.rawValue,
             type: trimmedType,
+            location: location.trimmingCharacters(in: .whitespaces),
             createdAt: createdAt,
             secrets: secrets.filter { !$0.key.trimmingCharacters(in: .whitespaces).isEmpty },
             runners: runners.filter { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
