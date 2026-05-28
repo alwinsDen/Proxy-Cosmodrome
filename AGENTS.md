@@ -18,9 +18,13 @@ xcodebuild build -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -d
 
 Always build Rust first before building/running the Xcode project.
 
+Xcode project requires **Default Actor Isolation → `nonisolated`** (Build Settings → Swift Compiler). Without this, builds fail with actor isolation errors.
+
 ## Bridge
 
 Swift-Rust bridging is handled by `swift-bridge`. The bridging code lives in `src/lib.rs` (Rust FFI module) and `generated/` (auto-generated Swift/C headers, produced by `build.rs`). After editing Rust FFI, rebuild Rust to regenerate bridging code.
+
+`bridging-header.h` at project root imports the generated headers and connects them to Swift. If it's missing or misconfigured, nothing compiles.
 
 ## Tests
 
@@ -29,10 +33,17 @@ Swift-Rust bridging is handled by `swift-bridge`. The bridging code lives in `sr
 xcodebuild test -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -destination 'platform=macOS'
 ```
 
+### UI tests (XCTest):
+```bash
+xcodebuild test -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -destination 'platform=macOS' -testPlan Proxy-CosmodromeUITests
+```
+
 ### Rust tests:
 ```bash
 cargo test
 ```
+
+Note: Unit tests use Swift Testing (`@Test`, `#expect`). UI tests use XCTest (`XCTestCase`, `XCTAssert`).
 
 ## Code style
 
@@ -42,7 +53,7 @@ cargo test
 ## Architecture
 
 - `Proxy-Cosmodrome/` — SwiftUI app layer (views, components)
-- `Proxy-Cosmodrome/InteractiveComponents/` — reusable SwiftUI components
+- `Proxy-Cosmodrome/InteractiveComponents/` — reusable SwiftUI components (ProjectRunners, ConfigEditorView)
 - `src/` — Rust backend logic (FFI bridge)
 - `generated/` — auto-generated bridge bindings (do not edit directly)
 
@@ -60,3 +71,5 @@ Whenever AGENTS.md is updated, ensure README.md is also updated with the latest 
 ## CI
 
 GitHub Actions workflow at `.github/workflows/swift.yml` — builds Rust + Xcode on push/PR to `main`. Only builds; does not run tests.
+
+CI builds Rust with `--release` (local dev uses debug). The `target/aarch64-apple-darwin/release` directory does not exist locally unless you also run a release build.

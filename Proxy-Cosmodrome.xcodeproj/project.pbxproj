@@ -31,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		ED04F5ED2FC861EB001831CD /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
 		ED2F2C152FA790D3008B41F6 /* Proxy-Cosmodrome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Proxy-Cosmodrome.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +92,7 @@
 		ED2F2C0C2FA790D3008B41F6 = {
 			isa = PBXGroup;
 			children = (
+				ED04F5ED2FC861EB001831CD /* AGENTS.md */,
 				EDF7E26F2FB059AE005043AB /* generated */,
 				EDF7E0B02FB056F6005043AB /* bridging-header.h */,
 				ED2F2C3F2FA79795008B41F6 /* README.md */,
