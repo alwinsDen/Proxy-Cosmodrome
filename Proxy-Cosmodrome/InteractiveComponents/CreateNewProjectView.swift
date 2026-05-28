@@ -6,6 +6,31 @@ struct RunnerConfig: Identifiable, Codable {
     var id = UUID()
     var name: String
     var command: String
+    var icon: String = "play.circle"
+
+    static let availableIcons = [
+        "doc.circle",
+        "flag.circle",
+        "play.circle",
+        "hammer.circle",
+        "arrow.triangle.2.circlepath.circle",
+        "arrow.down.circle",
+        "arrow.up.circle",
+        "gearshape.circle",
+        "wrench.adjustable.circle"
+    ]
+
+    static let iconLabels: [String: String] = [
+        "play.circle": "Run",
+        "hammer.circle": "Build",
+        "arrow.triangle.2.circlepath.circle": "Rebuild",
+        "arrow.down.circle": "Pull",
+        "arrow.up.circle": "Push",
+        "gearshape.circle": "Configure",
+        "wrench.adjustable.circle": "Tweak",
+        "doc.circle": "Generate",
+        "flag.circle": "Deploy",
+    ]
 }
 
 struct SecretEntry: Identifiable, Codable {
@@ -177,14 +202,19 @@ struct CreateNewProjectView: View {
         Group {
             Section("Project Details") {
                 TextField("Project Name", text: $projectName)
+                    .textFieldStyle(.roundedBorder)
                 TextField("GitHub URL", text: $githubURL)
+                    .textFieldStyle(.roundedBorder)
                 TextField("Description", text: $description)
+                    .textFieldStyle(.roundedBorder)
                 TextField("Type", text: $type)
+                    .textFieldStyle(.roundedBorder)
             }
 
             Section("Location") {
                 HStack {
                     TextField("Project Folder", text: $location)
+                        .textFieldStyle(.roundedBorder)
                     Button("Browse...", action: selectFolder)
                 }
             }
@@ -195,19 +225,24 @@ struct CreateNewProjectView: View {
                         .foregroundStyle(.secondary)
                 }
                 ForEach($runners) { $runner in
-                    HStack(spacing: 8) {
-                        TextField("Name", text: $runner.name)
-                            .frame(minWidth: 100)
-                        TextField("Command", text: $runner.command)
-                            .frame(minWidth: 180)
-                        Button {
-                            runners.removeAll { $0.id == runner.id }
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundStyle(.red)
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 8) {
+                            TextField("Name", text: $runner.name)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(minWidth: 100)
+                            TextField("Command", text: $runner.command)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(minWidth: 180)
+                            Button {
+                                runners.removeAll { $0.id == runner.id }
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundStyle(.red)
+                            }
+                            .buttonStyle(.plain)
+                            .help("Remove runner")
                         }
-                        .buttonStyle(.plain)
-                        .help("Remove runner")
+                        iconPicker(for: $runner)
                     }
                 }
                 Button {
@@ -224,10 +259,12 @@ struct CreateNewProjectView: View {
                 }
                 ForEach($secrets) { $secret in
                     HStack(spacing: 8) {
-                        TextField("Key", text: $secret.key)
-                            .frame(minWidth: 100)
-                        TextField("Value", text: $secret.value)
-                            .frame(minWidth: 100)
+                            TextField("Key", text: $secret.key)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(minWidth: 100)
+                            TextField("Value", text: $secret.value)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(minWidth: 100)
                         Picker("Runner", selection: $secret.runnerName) {
                             Text("All Runners").tag("")
                             ForEach(runners.filter { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }) { runner in
@@ -275,6 +312,24 @@ struct CreateNewProjectView: View {
         }
     }
 
+    // MARK: - Icon Picker
+
+    private func iconPicker(for runner: Binding<RunnerConfig>) -> some View {
+        HStack(spacing: 10) {
+            ForEach(RunnerConfig.availableIcons, id: \.self) { iconName in
+                Button {
+                    runner.wrappedValue.icon = iconName
+                } label: {
+                    Image(systemName: iconName)
+                        .font(.system(size: 16))
+                        .foregroundStyle(runner.wrappedValue.icon == iconName ? Color.accentColor : Color.secondary)
+                }
+                .buttonStyle(.plain)
+                .help(RunnerConfig.iconLabels[iconName] ?? iconName)
+            }
+        }
+    }
+
     // MARK: - Folder Selection
 
     private func selectFolder() {
@@ -307,11 +362,6 @@ struct CreateNewProjectView: View {
         }
 
         let trimmedURL = githubURL.trimmingCharacters(in: .whitespaces)
-        guard !trimmedURL.isEmpty else {
-            toastMessage = "GitHub URL is required"
-            withAnimation(.easeOut(duration: 0.2)) { showToast = true }
-            return
-        }
 
         let trimmedType = type.trimmingCharacters(in: .whitespaces)
         guard !trimmedType.isEmpty else {

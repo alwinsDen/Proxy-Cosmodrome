@@ -37,6 +37,7 @@ struct MusicStyleListView: View {
     @State private var runnerInstances: [RunnerInstance] = []
     @State private var selectedInstanceId: UUID?
     @State private var terminalHeight: CGFloat = 150
+    @State private var terminalFontSize: CGFloat = 11
 
     var body: some View {
         VStack(spacing: 0) {
@@ -101,6 +102,19 @@ struct MusicStyleListView: View {
             .listStyle(.inset)
             .navigationTitle("Application Manager")
             .onAppear(perform: loadProjects)
+            .onReceive(NotificationCenter.default.publisher(for: .commandOutput)) { notification in
+                guard let id = notification.userInfo?["id"] as? String,
+                      let output = notification.userInfo?["output"] as? String,
+                      let uuid = UUID(uuidString: id),
+                      let idx = runnerInstances.firstIndex(where: { $0.id == uuid }) else { return }
+                runnerInstances[idx].output += output
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .commandDone)) { notification in
+                guard let id = notification.userInfo?["id"] as? String,
+                      let uuid = UUID(uuidString: id),
+                      let idx = runnerInstances.firstIndex(where: { $0.id == uuid }) else { return }
+                runnerInstances[idx].isRunning = false
+            }
             .sheet(item: $projectToEdit) { project in
                 EditProjectView(project: project) { updated in
                     updateProject(updated)
@@ -133,38 +147,45 @@ struct MusicStyleListView: View {
 
                 VStack(spacing: 0) {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 2) {
+                        HStack(spacing: 4) {
                             ForEach(runnerInstances) { instance in
-                                HStack(spacing: 4) {
-                                    Button {
-                                        selectedInstanceId = instance.id
-                                    } label: {
+                                Button {
+                                    selectedInstanceId = instance.id
+                                } label: {
+                                    HStack(spacing: 5) {
+                                        Circle()
+                                            .fill(instance.isRunning ? Color.green : Color.gray)
+                                            .frame(width: 7, height: 7)
                                         Text(instance.runnerName)
                                             .font(.caption)
                                             .fontWeight(selectedInstanceId == instance.id ? .semibold : .regular)
-                                    }
-                                    .buttonStyle(.plain)
-
-                                    Button {
-                                        runnerInstances.removeAll { $0.id == instance.id }
-                                        if selectedInstanceId == instance.id {
-                                            selectedInstanceId = runnerInstances.last?.id
+                                        Button {
+                                            runnerInstances.removeAll { $0.id == instance.id }
+                                            if selectedInstanceId == instance.id {
+                                                selectedInstanceId = runnerInstances.last?.id
+                                            }
+                                        } label: {
+                                            Image(systemName: "xmark")
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
                                         }
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
+                                        .buttonStyle(.plain)
                                     }
-                                    .buttonStyle(.plain)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
                                 }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(selectedInstanceId == instance.id ? Color.accentColor.opacity(0.15) : Color.clear)
-                                .cornerRadius(4)
+                                .buttonStyle(.plain)
+                                .background {
+                                    if selectedInstanceId == instance.id {
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .fill(Color(NSColor.windowBackgroundColor))
+                                            .shadow(color: .black.opacity(0.08), radius: 1, y: 0.5)
+                                    }
+                                }
                             }
                         }
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 2)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
                     }
                     .background(Color(NSColor.controlBackgroundColor))
 
@@ -173,7 +194,7 @@ struct MusicStyleListView: View {
                         ScrollViewReader { proxy in
                             ScrollView {
                                 Text(instance.output)
-                                    .font(.system(.caption, design: .monospaced))
+                                    .font(.system(size: terminalFontSize, design: .monospaced))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .textSelection(.enabled)
                                     .padding(8)
@@ -183,6 +204,39 @@ struct MusicStyleListView: View {
                             .background(Color(NSColor.textBackgroundColor))
                             .onChange(of: runnerInstances) { _, _ in
                                 proxy.scrollTo("bottom", anchor: .bottom)
+                            }
+                            .overlay(alignment: .bottomTrailing) {
+                                HStack(spacing: 4) {
+                                    Button {
+                                        let newSize = max(6, terminalFontSize - 1)
+                                        terminalFontSize = newSize
+                                        saveTerminalFontSize(newSize)
+                                    } label: {
+                                        Image(systemName: "minus.magnifyingglass")
+                                            .font(.system(size: 15))
+                                            .frame(width: 22, height: 22)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Zoom out")
+
+                                    Button {
+                                        let newSize = min(24, terminalFontSize + 1)
+                                        terminalFontSize = newSize
+                                        saveTerminalFontSize(newSize)
+                                    } label: {
+                                        Image(systemName: "plus.magnifyingglass")
+                                            .font(.system(size: 15))
+                                            .frame(width: 22, height: 22)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Zoom in")
+                                }
+                                .padding(6)
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .padding(12)
                             }
                         }
                     }
@@ -196,8 +250,16 @@ struct MusicStyleListView: View {
         let raw = load_config().toString()
         guard !raw.hasPrefix("ERROR:"),
               let data = raw.data(using: .utf8),
-              let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let projectsArray = config["projects"] as? [[String: Any]] else {
+              let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            projects = []
+            return
+        }
+
+        if let fontSize = config["terminal_font_size"] as? Double {
+            terminalFontSize = max(6, min(24, CGFloat(fontSize)))
+        }
+
+        guard let projectsArray = config["projects"] as? [[String: Any]] else {
             projects = []
             return
         }
@@ -207,6 +269,17 @@ struct MusicStyleListView: View {
             else { return nil }
             return project
         }
+    }
+
+    private func saveTerminalFontSize(_ size: CGFloat) {
+        let raw = load_config().toString()
+        guard !raw.hasPrefix("ERROR:"),
+              let data = raw.data(using: .utf8),
+              var config = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+        config["terminal_font_size"] = Double(size)
+        guard let finalData = try? JSONSerialization.data(withJSONObject: config, options: [.prettyPrinted, .sortedKeys]),
+              let finalJSON = String(data: finalData, encoding: .utf8) else { return }
+        save_config(finalJSON)
     }
 
     private func deleteProject(_ project: ProjectConfig) {
@@ -283,17 +356,7 @@ struct MusicStyleListView: View {
             return
         }
 
-        let instanceId = instance.id
-        DispatchQueue.global().async {
-            let output = run_command(enhancedCommand, location).toString()
-            DispatchQueue.main.async {
-                if let idx = runnerInstances.firstIndex(where: { $0.id == instanceId }) {
-                    runnerInstances[idx].output += output
-                    if !output.hasSuffix("\n") { runnerInstances[idx].output += "\n" }
-                    runnerInstances[idx].isRunning = false
-                }
-            }
-        }
+        run_command_streaming(enhancedCommand, location, instance.id.uuidString)
     }
 }
 

@@ -8,6 +8,9 @@ struct EditProjectView: View {
     @State private var runners: [RunnerConfig]
     @State private var secrets: [SecretEntry]
     @State private var location: String
+    @State private var githubURL: String
+    @State private var description: String
+    @State private var type: String
 
     @State private var toastMessage: String?
     @State private var showToast = false
@@ -18,6 +21,9 @@ struct EditProjectView: View {
         _runners = State(initialValue: project.runners)
         _secrets = State(initialValue: project.secrets)
         _location = State(initialValue: project.location)
+        _githubURL = State(initialValue: project.githubURL)
+        _description = State(initialValue: project.description)
+        _type = State(initialValue: project.type)
     }
 
     var body: some View {
@@ -38,14 +44,18 @@ struct EditProjectView: View {
                 Form {
                     Section("Project Details") {
                         LabeledContent("Name", value: project.name)
-                        LabeledContent("GitHub URL", value: project.githubURL)
-                        LabeledContent("Description", value: project.description)
-                        LabeledContent("Type", value: project.type)
+                        TextField("GitHub URL", text: $githubURL)
+                            .textFieldStyle(.roundedBorder)
+                        TextField("Description", text: $description)
+                            .textFieldStyle(.roundedBorder)
+                        TextField("Type", text: $type)
+                            .textFieldStyle(.roundedBorder)
                     }
 
                     Section("Location") {
                         HStack {
                             TextField("Project Folder", text: $location)
+                                .textFieldStyle(.roundedBorder)
                             Button("Browse...", action: selectFolder)
                         }
                     }
@@ -56,19 +66,24 @@ struct EditProjectView: View {
                                 .foregroundStyle(.secondary)
                         }
                         ForEach($runners) { $runner in
-                            HStack(spacing: 8) {
-                                TextField("Name", text: $runner.name)
-                                    .frame(minWidth: 100)
-                                TextField("Command", text: $runner.command)
-                                    .frame(minWidth: 180)
-                                Button {
-                                    runners.removeAll { $0.id == runner.id }
-                                } label: {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundStyle(.red)
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack(spacing: 8) {
+                                    TextField("Name", text: $runner.name)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(minWidth: 100)
+                                    TextField("Command", text: $runner.command)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(minWidth: 180)
+                                    Button {
+                                        runners.removeAll { $0.id == runner.id }
+                                    } label: {
+                                        Image(systemName: "minus.circle.fill")
+                                            .foregroundStyle(.red)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Remove runner")
                                 }
-                                .buttonStyle(.plain)
-                                .help("Remove runner")
+                                iconPicker(for: $runner)
                             }
                         }
                         Button {
@@ -86,8 +101,10 @@ struct EditProjectView: View {
                         ForEach($secrets) { $secret in
                             HStack(spacing: 8) {
                                 TextField("Key", text: $secret.key)
+                                    .textFieldStyle(.roundedBorder)
                                     .frame(minWidth: 100)
                                 TextField("Value", text: $secret.value)
+                                    .textFieldStyle(.roundedBorder)
                                     .frame(minWidth: 100)
                                 Picker("Runner", selection: $secret.runnerName) {
                                     Text("All Runners").tag("")
@@ -157,14 +174,30 @@ struct EditProjectView: View {
         }
     }
 
+    private func iconPicker(for runner: Binding<RunnerConfig>) -> some View {
+        HStack(spacing: 10) {
+            ForEach(RunnerConfig.availableIcons, id: \.self) { iconName in
+                Button {
+                    runner.wrappedValue.icon = iconName
+                } label: {
+                    Image(systemName: iconName)
+                        .font(.system(size: 16))
+                        .foregroundStyle(runner.wrappedValue.icon == iconName ? Color.accentColor : Color.secondary)
+                }
+                .buttonStyle(.plain)
+                .help(RunnerConfig.iconLabels[iconName] ?? iconName)
+            }
+        }
+    }
+
     private func save() {
         let updated = ProjectConfig(
             id: project.id,
             name: project.name,
-            description: project.description,
-            githubURL: project.githubURL,
+            description: description.trimmingCharacters(in: .whitespaces),
+            githubURL: githubURL.trimmingCharacters(in: .whitespaces),
             category: project.category,
-            type: project.type,
+            type: type.trimmingCharacters(in: .whitespaces),
             location: location.trimmingCharacters(in: .whitespaces),
             createdAt: project.createdAt,
             secrets: secrets.filter { !$0.key.trimmingCharacters(in: .whitespaces).isEmpty },

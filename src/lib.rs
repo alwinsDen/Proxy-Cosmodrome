@@ -1,6 +1,8 @@
-use std::path::PathBuf;
 use std::fs;
-use std::process::Command;
+use std::io::{BufRead, BufReader};
+use std::path::PathBuf;
+use std::process::{Command, Stdio};
+use std::thread;
 
 fn config_dir() -> PathBuf {
     dirs::home_dir()
@@ -19,11 +21,12 @@ mod ffi {
         fn get_config_dir() -> String;
         fn load_config() -> String;
         fn save_config(json: String) -> bool;
-        fn run_command(command: String, working_dir: String) -> String;
+        fn run_command_streaming(command: String, working_dir: String, instance_id: String);
     }
 
     extern "Swift" {
-        //
+        fn on_command_output(instance_id: String, output: String);
+        fn on_command_done(instance_id: String);
     }
 }
 
@@ -47,7 +50,7 @@ fn load_config() -> String {
         let initial = format!("{{\n  \"base_config_location\": \"{}\"\n}}\n", dir_path);
 
         match fs::write(&file, &initial) {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(e) => return format!("ERROR: Failed to write default config: {}", e),
         }
     }
@@ -67,27 +70,69 @@ fn save_config(json: String) -> bool {
     }
 }
 
-fn run_command(command: String, working_dir: String) -> String {
-    let full_command = format!("cd \"{}\" && {}", working_dir, command);
+fn run_command_streaming(command: String, working_dir: String, instance_id: String) {
     let shell = std::env::var("SHELL").unwrap_or_else(|_| "zsh".to_string());
-    match Command::new(&shell)
-        .arg("-l")
-        .arg("-c")
-        .arg(&full_command)
-        .env_clear()
-        .env("HOME", std::env::var("HOME").unwrap_or_default())
-        .output()
-    {
-        Ok(output) => {
-            let mut result = String::new();
-            if !output.stdout.is_empty() {
-                result.push_str(&String::from_utf8_lossy(&output.stdout));
+    let full_command = format!("cd \"{}\" && {}", working_dir, command);
+
+    thread::spawn(move || {
+        let mut child = match Command::new(&shell)
+            .arg("-l")
+            .arg("-c")
+            .arg(&full_command)
+            .env_clear()
+            .env("HOME", std::env::var("HOME").unwrap_or_default())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+        {
+            Ok(child) => child,
+            Err(e) => {
+                ffi::on_command_output(instance_id.clone(), format!("ERROR: {}\n", e));
+                ffi::on_command_done(instance_id);
+                return;
             }
-            if !output.stderr.is_empty() {
-                result.push_str(&String::from_utf8_lossy(&output.stderr));
-            }
-            result
-        }
-        Err(e) => format!("ERROR: {}\n", e),
-    }
+        };
+
+        let stdout_handle = {
+            let id = instance_id.clone();
+            let stdout = child.stdout.take();
+            thread::spawn(move || {
+                if let Some(stdout) = stdout {
+                    let reader = BufReader::new(stdout);
+                    for line in reader.lines() {
+                        match line {
+                            Ok(text) => {
+                                ffi::on_command_output(id.clone(), text + "\n");
+                            }
+                            Err(_) => break,
+                        }
+                    }
+                }
+            })
+        };
+
+        let stderr_handle = {
+            let id = instance_id.clone();
+            let stderr = child.stderr.take();
+            thread::spawn(move || {
+                if let Some(stderr) = stderr {
+                    let reader = BufReader::new(stderr);
+                    for line in reader.lines() {
+                        match line {
+                            Ok(text) => {
+                                ffi::on_command_output(id.clone(), text + "\n");
+                            }
+                            Err(_) => break,
+                        }
+                    }
+                }
+            })
+        };
+
+        child.wait().ok();
+        let _ = stdout_handle.join();
+        let _ = stderr_handle.join();
+
+        ffi::on_command_done(instance_id);
+    });
 }

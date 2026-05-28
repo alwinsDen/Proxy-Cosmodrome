@@ -13,6 +13,7 @@ struct ProjectRunners : View {
     var onDelete: () -> Void
 
     @State private var showDeleteConfirmation = false
+    @State private var hoveredRunnerId: UUID?
 
     private let runnerColors: [Color] = [
         .blue, .green, .orange, .purple, .pink, .teal,
@@ -25,13 +26,24 @@ struct ProjectRunners : View {
                 Button {
                     onRunRunner?(runner)
                 } label: {
-                    Image(systemName: "play.circle")
+                    Image(systemName: runner.icon)
                         .font(.system(size: 24))
                         .contentShape(Circle())
                         .foregroundStyle(runnerColors[index % runnerColors.count])
                 }
                 .buttonStyle(.plain)
-                .help(runner.name)
+                .popover(isPresented: Binding(
+                    get: { hoveredRunnerId == runner.id },
+                    set: { if !$0 { hoveredRunnerId = nil } }
+                )) {
+                    Text(runner.name)
+                        .font(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                }
+                .onHover { hovering in
+                    hoveredRunnerId = hovering ? runner.id : nil
+                }
             }
             Spacer()
             Button{}label: {
