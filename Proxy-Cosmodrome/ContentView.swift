@@ -16,21 +16,11 @@ struct MenuItem: Identifiable, Hashable {
     let color: Color
 }
 
-struct Project: Identifiable {
-    let id = UUID()
-    let title: String
-    let description: String
-    let type: String
-    let created_at: String
-}
-
 struct MusicStyleListView: View {
 
-    private let projects: [Project] = [
-        Project(title: "SAAS web app", description: "weekend test01", type: "react", created_at: "3:20"),
-        Project(title: "Claude code", description: "test 02", type: "react", created_at: "3:23", ),
-        Project(title: "Proxy-test", description: "simple web app", type: "react", created_at: "2:54", ),
-    ]
+    @State private var projects: [ProjectConfig] = []
+    @State private var showEditSheet = false
+    @State private var projectToEdit: ProjectConfig?
 
     var body: some View {
         List {
@@ -44,7 +34,7 @@ struct MusicStyleListView: View {
 
                         VStack(alignment: .leading, spacing: 5)
                         {
-                            Text(project.title)
+                            Text(project.name)
                                 .font(.body)
                                 .lineLimit(1)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -55,7 +45,7 @@ struct MusicStyleListView: View {
                         }.frame(maxWidth: 140)
 
                         HStack{
-                            ProjectRunners()
+                            ProjectRunners(runners: project.runners, onEdit: { projectToEdit = project; showEditSheet = true }, onDelete: { deleteProject(project) })
                         }
 
                         Spacer()
@@ -67,11 +57,11 @@ struct MusicStyleListView: View {
                             .frame(maxWidth: 70, alignment: .leading)
 //                            .background(.yellow)
 
-                        Text(project.created_at)
+                        Text(project.createdAt)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .monospacedDigit()
-                            .frame(maxWidth: 50, alignment: .trailing)
+                            .frame(maxWidth: 100, alignment: .trailing)
                     }
                     .padding(.vertical, 2)
                 }
@@ -88,7 +78,7 @@ struct MusicStyleListView: View {
                         .frame(width: 70, alignment: .leading)
 //                        .background(Color(.blue))
                     Text("created at")
-                        .frame(maxWidth: 50, alignment: .trailing)
+                        .frame(maxWidth: 100, alignment: .trailing)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -96,6 +86,82 @@ struct MusicStyleListView: View {
         }
         .listStyle(.inset)
         .navigationTitle("Application Manager")
+        .onAppear(perform: loadProjects)
+        .sheet(isPresented: $showEditSheet) {
+            if let project = projectToEdit {
+                EditProjectView(project: project) { updated in
+                    updateProject(updated)
+                }
+            }
+        }
+    }
+
+    private func loadProjects() {
+        let raw = load_config().toString()
+        guard !raw.hasPrefix("ERROR:"),
+              let data = raw.data(using: .utf8),
+              let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let projectsArray = config["projects"] as? [[String: Any]] else {
+            projects = []
+            return
+        }
+        projects = projectsArray.compactMap { dict in
+            guard let projectData = try? JSONSerialization.data(withJSONObject: dict),
+                  let project = try? JSONDecoder().decode(ProjectConfig.self, from: projectData)
+            else { return nil }
+            return project
+        }
+    }
+
+    private func deleteProject(_ project: ProjectConfig) {
+        projects.removeAll { $0.id == project.id }
+
+        let raw = load_config().toString()
+        guard !raw.hasPrefix("ERROR:"),
+              let data = raw.data(using: .utf8),
+              var config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              var projectsArray = config["projects"] as? [[String: Any]] else { return }
+
+        projectsArray.removeAll { dict in
+            guard let idStr = dict["id"] as? String,
+                  let uuid = UUID(uuidString: idStr) else { return false }
+            return uuid == project.id
+        }
+        config["projects"] = projectsArray
+
+        guard let finalData = try? JSONSerialization.data(withJSONObject: config, options: [.prettyPrinted, .sortedKeys]),
+              let finalJSON = String(data: finalData, encoding: .utf8) else { return }
+
+        save_config(finalJSON)
+    }
+
+    private func updateProject(_ updated: ProjectConfig) {
+        guard let index = projects.firstIndex(where: { $0.id == updated.id }) else { return }
+        projects[index] = updated
+
+        let raw = load_config().toString()
+        guard !raw.hasPrefix("ERROR:"),
+              let data = raw.data(using: .utf8),
+              var config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              var projectsArray = config["projects"] as? [[String: Any]] else { return }
+
+        guard let projectData = try? JSONEncoder().encode(updated),
+              let updatedDict = try? JSONSerialization.jsonObject(with: projectData) as? [String: Any] else { return }
+
+        if let idx = projectsArray.firstIndex(where: { dict in
+            guard let idStr = dict["id"] as? String,
+                  let uuid = UUID(uuidString: idStr) else { return false }
+            return uuid == updated.id
+        }) {
+            projectsArray[idx] = updatedDict
+        }
+
+        config["projects"] = projectsArray
+
+        guard let finalData = try? JSONSerialization.data(withJSONObject: config, options: [.prettyPrinted, .sortedKeys]),
+              let finalJSON = String(data: finalData, encoding: .utf8) else { return }
+
+        save_config(finalJSON)
     }
 }
 
@@ -124,7 +190,9 @@ struct ContentView: View {
     @State private var selectedItem: MenuItem.ID?
 
     @State private var showConfigEditor = false
+    @State private var showCreateNew = false
     @State private var configJSON: String = "{}"
+    @State private var projectRefreshID = UUID()
 
     private func loadConfig() {
         let result = load_config().toString()
@@ -172,6 +240,7 @@ struct ContentView: View {
                     .onAppear { showConfigEditor = true }
             } else if selectedMenuItem?.name == "Apps" || selectedItem == nil {
                 MusicStyleListView()
+                    .id(projectRefreshID)
             } else {
                 ContentUnavailableView("Select an item", systemImage: "sidebar.left", description: Text("Choose an item from the sidebar."))
             }
@@ -180,7 +249,7 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    print_hello_rusted()
+                    showCreateNew = true
                 } label: {
                     Text("Create New")
                     Image(systemName: "plus")
@@ -202,6 +271,13 @@ struct ContentView: View {
                 }
         }
         .onAppear(perform: loadConfig)
+        .sheet(isPresented: $showCreateNew) {
+            CreateNewProjectView()
+                .onDisappear {
+                    loadConfig()
+                    projectRefreshID = UUID()
+                }
+        }
     }
 }
 
