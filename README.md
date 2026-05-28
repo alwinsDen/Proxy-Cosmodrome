@@ -1,29 +1,64 @@
-#  Proxy Cosmodrome
+# Proxy Cosmodrome
 
-Mac runner tool.
+A macOS desktop app that helps you launch and manage applications installed on your local system. Think of it as a mission control for your Mac's apps.
+
+Built with SwiftUI on the frontend and Rust powering the backend logic, connected through `swift-bridge`.
 
 | Requirement | Version |
 |-------------|---------|
 | Xcode | 26.4.1 |
-| MacOS | 26.4.1 |
+| macOS | 26.4.1 |
 | rustc | 1.94 |
 
-## setup & build
-1. Before opening the project with Xcode
-```shell
-# currently aarch64-apple-darwin has been hardcoded xcode proj.
-cargo build --target aarch64-apple-darwin
-```
-or trigger an inital Xcode build itself [will compile rust & swift].
+## Getting started
 
-## integration steps
-If recreating the process to configure rustc-swift, below is the SOP
-1. Definite archiecture as arm64, Build Settings -> Architectures -> Release -> arm64
-2. Define Build Settings -> Library Search Paths -> 
-    * DEBUG -> `$(PROJECT_DIR)/target/aarch64-apple-darwin/debug`
-    * RELEASE -> `$(PROJECT_DIR)/target/aarch64-apple-darwin/release`
-3. Build Settings -> Other Linker Flags -> -lProxy_CosmodromeRustCore.
-    * Here `Proxy_CosmodromeRustCore` is derived from name of `.a` in target/aarch64-apple-darwin/debug/
-4. Swift Compiler - General -> Briding headers -> $(SRCROOT)/bridging-header.h (set for both Debug & Release)
-5. Error fix for ```Nonisolated deinitializer 'deinit' has different actor isolation from main actor-isolated overridden declaration```
-   * Swift Compiler -> Concurrency -> Default Actor Isolation -> nonisolated
+```bash
+# 1. Build the Rust backend first
+cargo build --target aarch64-apple-darwin
+
+# 2. Open the Xcode project and build/run
+open Proxy-Cosmodrome.xcodeproj
+```
+
+Or from the command line:
+
+```bash
+cargo build --target aarch64-apple-darwin
+xcodebuild build -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -destination 'platform=macOS'
+```
+
+## Running tests
+
+```bash
+# Swift unit tests
+xcodebuild test -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -destination 'platform=macOS'
+
+# Rust tests
+cargo test
+```
+
+## Tech stack
+
+- **SwiftUI** — native macOS UI
+- **Rust** — backend logic compiled as a static library
+- **swift-bridge** — generates Swift bindings for Rust functions automatically
+- **FontAwesomeSwiftUI** — icon library via Swift Package Manager
+
+## Project structure
+
+| Directory | Contents |
+|-----------|----------|
+| `Proxy-Cosmodrome/` | SwiftUI views and components |
+| `src/` | Rust source (FFI bridge in `lib.rs`) |
+| `generated/` | Auto-generated Swift/C bridge code — do not edit |
+| `.github/workflows/` | CI configuration (builds on push to `main`) |
+
+## Xcode setup (one-time)
+
+If you need to configure the Swift-Rust bridge from scratch:
+
+1. Set **Architectures → Release** to `arm64`
+2. Add **Library Search Paths** for the Rust build output (`target/aarch64-apple-darwin/debug` for Debug, `release` for Release)
+3. Add **Other Linker Flags** → `-lProxy_CosmodromeRustCore`
+4. Set **Bridging Header** → `$(SRCROOT)/bridging-header.h`
+5. Fix actor isolation error by setting **Default Actor Isolation** → `nonisolated`

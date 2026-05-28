@@ -42,15 +42,6 @@ struct MusicStyleListView: View {
                             .foregroundStyle(.secondary)
                             .frame(width: 24, alignment: .trailing)
 
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(.clear)
-                            .frame(width: 10, height: 20)
-                            .overlay {
-                                Image(systemName: "play")
-                                    .foregroundStyle(.white)
-                                    .font(.caption)
-                            }
-
                         VStack(alignment: .leading, spacing: 5)
                         {
                             Text(project.title)
@@ -61,10 +52,10 @@ struct MusicStyleListView: View {
                                 .font(.body)
                                 .lineLimit(1)
                                 .foregroundStyle(.secondary)
-                        }.frame(maxWidth: 120)
+                        }.frame(maxWidth: 140)
 
                         HStack{
-                            Text("Hi there")
+                            ProjectRunners()
                         }
 
                         Spacer()
@@ -126,10 +117,14 @@ struct ContentView: View {
     private let menuItems: [MenuItem] = [
         MenuItem(name: "Apps", subtitle: "Manage applications", iconName: "square.grid.2x2.fill", color: .blue),
         MenuItem(name: "Server", subtitle: "Server configuration", iconName: "server.rack", color: .green),
-        MenuItem(name: "Docker", subtitle: "Container management", iconName: "shippingbox.fill", color: .orange)
+        MenuItem(name: "Docker", subtitle: "Container management", iconName: "shippingbox.fill", color: .orange),
+        MenuItem(name: "Edit Configuration", subtitle: "Amend run settings", iconName: "apple.meditate", color: .red)
     ]
 
     @State private var selectedItem: MenuItem.ID?
+
+    @State private var showConfigEditor = false
+    @State private var configJSON: String = "{}"
 
     private var selectedMenuItem: MenuItem? {
         menuItems.first { $0.id == selectedItem }
@@ -163,7 +158,10 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
                 .padding(10)
         } detail: {
-            if selectedMenuItem?.name == "Apps" || selectedItem == nil {
+            if selectedMenuItem?.name == "Edit Configuration" {
+                Color.clear
+                    .onAppear { showConfigEditor = true }
+            } else if selectedMenuItem?.name == "Apps" || selectedItem == nil {
                 MusicStyleListView()
             } else {
                 ContentUnavailableView("Select an item", systemImage: "sidebar.left", description: Text("Choose an item from the sidebar."))
@@ -175,7 +173,7 @@ struct ContentView: View {
                 Button {
                     print_hello_rusted()
                 } label: {
-                    Text("Onboard app")
+                    Text("Create New")
                     Image(systemName: "plus")
                         .font(.system(size: 10))
                 }
@@ -187,6 +185,12 @@ struct ContentView: View {
                         .font(.system(size: 10))
                 }
             }
+        }
+        .sheet(isPresented: $showConfigEditor) {
+            ConfigEditorView(jsonText: $configJSON)
+                .onDisappear {
+                    selectedItem = menuItems.first?.id
+                }
         }
     }
 }
