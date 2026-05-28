@@ -126,6 +126,15 @@ struct ContentView: View {
     @State private var showConfigEditor = false
     @State private var configJSON: String = "{}"
 
+    private func loadConfig() {
+        let result = load_config().toString()
+        if result.hasPrefix("ERROR:") {
+            configJSON = "{}"
+        } else {
+            configJSON = result
+        }
+    }
+
     private var selectedMenuItem: MenuItem? {
         menuItems.first { $0.id == selectedItem }
     }
@@ -192,6 +201,7 @@ struct ContentView: View {
                     selectedItem = menuItems.first?.id
                 }
         }
+        .onAppear(perform: loadConfig)
     }
 }
 

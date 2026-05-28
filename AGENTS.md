@@ -53,13 +53,21 @@ Note: Unit tests use Swift Testing (`@Test`, `#expect`). UI tests use XCTest (`X
 ## Architecture
 
 - `Proxy-Cosmodrome/` — SwiftUI app layer (views, components)
-- `Proxy-Cosmodrome/InteractiveComponents/` — reusable SwiftUI components (ProjectRunners, ConfigEditorView)
-- `src/` — Rust backend logic (FFI bridge)
+- `Proxy-Cosmodrome/InteractiveComponents/` — reusable SwiftUI components (ProjectRunners, ConfigEditorView, CodeEditorView)
+- `src/` — Rust backend logic (FFI bridge, file I/O, config management)
 - `generated/` — auto-generated bridge bindings (do not edit directly)
+
+## Config persistence
+
+User configuration is stored at `~/.proxy-cosmodrome/default-configs.json`. All file I/O is handled by Rust via FFI.
+
+- **Rust (`src/lib.rs`):** `load_config()` creates the file on first launch with `{"base_config_location": "..."}`; `save_config(json)` writes content; `get_config_dir()` returns the directory path
+- **Swift (`ContentView.swift`):** calls `load_config()` on appear to populate the editor
+- **Swift (`ConfigEditorView.swift`):** calls `save_config()` after JSON validation on Save
 
 ## Dependencies
 
-- Rust: `swift-bridge` 0.1
+- Rust: `swift-bridge` 0.1, `serde` 1, `serde_json` 1, `dirs` 5
 - Swift (SPM): `FontAwesomeSwiftUI`
 
 ## Important
