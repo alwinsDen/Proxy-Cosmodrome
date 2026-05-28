@@ -4,6 +4,9 @@ import AppKit
 extension Notification.Name {
     static let commandOutput = Notification.Name("commandOutput")
     static let commandDone = Notification.Name("commandDone")
+    static let openEditProject = Notification.Name("openEditProject")
+    static let projectConfigChanged = Notification.Name("projectConfigChanged")
+    static let openDetachedTerminal = Notification.Name("openDetachedTerminal")
 }
 
 func on_command_output(instance_id: RustString, output: RustString) {

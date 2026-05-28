@@ -1,8 +1,14 @@
+use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
+use std::os::unix::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
+use std::sync::{LazyLock, Mutex};
 use std::thread;
+
+static RUNNING_PIDS: LazyLock<Mutex<HashMap<String, u32>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
 
 fn config_dir() -> PathBuf {
     dirs::home_dir()
@@ -22,6 +28,7 @@ mod ffi {
         fn load_config() -> String;
         fn save_config(json: String) -> bool;
         fn run_command_streaming(command: String, working_dir: String, instance_id: String);
+        fn kill_process(instance_id: String);
     }
 
     extern "Swift" {
@@ -79,6 +86,7 @@ fn run_command_streaming(command: String, working_dir: String, instance_id: Stri
             .arg("-l")
             .arg("-c")
             .arg(&full_command)
+            .process_group(0)
             .env_clear()
             .env("HOME", std::env::var("HOME").unwrap_or_default())
             .stdout(Stdio::piped())
@@ -92,6 +100,9 @@ fn run_command_streaming(command: String, working_dir: String, instance_id: Stri
                 return;
             }
         };
+
+        let pid = child.id();
+        RUNNING_PIDS.lock().unwrap().insert(instance_id.clone(), pid);
 
         let stdout_handle = {
             let id = instance_id.clone();
@@ -133,6 +144,17 @@ fn run_command_streaming(command: String, working_dir: String, instance_id: Stri
         let _ = stdout_handle.join();
         let _ = stderr_handle.join();
 
+        RUNNING_PIDS.lock().unwrap().remove(&instance_id);
         ffi::on_command_done(instance_id);
     });
+}
+
+fn kill_process(instance_id: String) {
+    let pid = RUNNING_PIDS.lock().unwrap().remove(&instance_id);
+    if let Some(pid) = pid {
+        let _ = std::process::Command::new("kill")
+            .arg("-TERM")
+            .arg(format!("-{}", pid))
+            .status();
+    }
 }

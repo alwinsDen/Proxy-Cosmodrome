@@ -32,10 +32,10 @@ struct MenuItem: Identifiable, Hashable {
 
 struct MusicStyleListView: View {
 
+    @EnvironmentObject var runnerManager: RunnerManager
+
     @State private var projects: [ProjectConfig] = []
     @State private var projectToEdit: ProjectConfig?
-    @State private var runnerInstances: [RunnerInstance] = []
-    @State private var selectedInstanceId: UUID?
     @State private var terminalHeight: CGFloat = 150
     @State private var terminalFontSize: CGFloat = 11
 
@@ -63,7 +63,7 @@ struct MusicStyleListView: View {
                             }.frame(maxWidth: 140)
 
                             HStack{
-                                ProjectRunners(runners: project.runners, onRunRunner: { runRunner($0, in: project.location, projectName: project.name, secrets: project.secrets) }, onEdit: { projectToEdit = project }, onDelete: { deleteProject(project) })
+                                ProjectRunners(runners: project.runners, onRunRunner: { runnerManager.runRunner($0, location: project.location, projectName: project.name, secrets: project.secrets) }, onRestartRunner: { runnerManager.restartRunner($0, location: project.location, projectName: project.name, secrets: project.secrets) }, isRunnerRunning: { runner in runnerManager.runnerInstances.contains(where: { $0.runnerName == runner.name && $0.projectName == project.name && $0.isRunning }) }, onEdit: { projectToEdit = project }, onDelete: { deleteProject(project) })
                             }
 
                             Spacer()
@@ -102,18 +102,11 @@ struct MusicStyleListView: View {
             .listStyle(.inset)
             .navigationTitle("Application Manager")
             .onAppear(perform: loadProjects)
-            .onReceive(NotificationCenter.default.publisher(for: .commandOutput)) { notification in
-                guard let id = notification.userInfo?["id"] as? String,
-                      let output = notification.userInfo?["output"] as? String,
-                      let uuid = UUID(uuidString: id),
-                      let idx = runnerInstances.firstIndex(where: { $0.id == uuid }) else { return }
-                runnerInstances[idx].output += output
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .commandDone)) { notification in
-                guard let id = notification.userInfo?["id"] as? String,
-                      let uuid = UUID(uuidString: id),
-                      let idx = runnerInstances.firstIndex(where: { $0.id == uuid }) else { return }
-                runnerInstances[idx].isRunning = false
+            .onReceive(NotificationCenter.default.publisher(for: .openEditProject)) { notification in
+                guard let idStr = notification.userInfo?["projectID"] as? String,
+                      let uuid = UUID(uuidString: idStr),
+                      let project = projects.first(where: { $0.id == uuid }) else { return }
+                projectToEdit = project
             }
             .sheet(item: $projectToEdit) { project in
                 EditProjectView(project: project) { updated in
@@ -121,7 +114,7 @@ struct MusicStyleListView: View {
                 }
             }
 
-            if !runnerInstances.isEmpty {
+            if !runnerManager.runnerInstances.isEmpty {
                 Rectangle()
                     .fill(.gray.opacity(0.2))
                     .frame(height: 5)
@@ -148,9 +141,9 @@ struct MusicStyleListView: View {
                 VStack(spacing: 0) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 4) {
-                            ForEach(runnerInstances) { instance in
+                            ForEach(runnerManager.runnerInstances) { instance in
                                 Button {
-                                    selectedInstanceId = instance.id
+                                    runnerManager.selectedInstanceId = instance.id
                                 } label: {
                                     HStack(spacing: 5) {
                                         Circle()
@@ -158,12 +151,9 @@ struct MusicStyleListView: View {
                                             .frame(width: 7, height: 7)
                                         Text(instance.runnerName)
                                             .font(.caption)
-                                            .fontWeight(selectedInstanceId == instance.id ? .semibold : .regular)
+                                            .fontWeight(runnerManager.selectedInstanceId == instance.id ? .semibold : .regular)
                                         Button {
-                                            runnerInstances.removeAll { $0.id == instance.id }
-                                            if selectedInstanceId == instance.id {
-                                                selectedInstanceId = runnerInstances.last?.id
-                                            }
+                                            runnerManager.removeInstance(id: instance.id)
                                         } label: {
                                             Image(systemName: "xmark")
                                                 .font(.caption2)
@@ -176,7 +166,7 @@ struct MusicStyleListView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .background {
-                                    if selectedInstanceId == instance.id {
+                                    if runnerManager.selectedInstanceId == instance.id {
                                         RoundedRectangle(cornerRadius: 5)
                                             .fill(Color(NSColor.windowBackgroundColor))
                                             .shadow(color: .black.opacity(0.08), radius: 1, y: 0.5)
@@ -189,8 +179,8 @@ struct MusicStyleListView: View {
                     }
                     .background(Color(NSColor.controlBackgroundColor))
 
-                    if let selectedId = selectedInstanceId,
-                       let instance = runnerInstances.first(where: { $0.id == selectedId }) {
+                    if let selectedId = runnerManager.selectedInstanceId,
+                       let instance = runnerManager.runnerInstances.first(where: { $0.id == selectedId }) {
                         ScrollViewReader { proxy in
                             ScrollView {
                                 Text(instance.output)
@@ -202,7 +192,7 @@ struct MusicStyleListView: View {
                             }
                             .frame(height: terminalHeight)
                             .background(Color(NSColor.textBackgroundColor))
-                            .onChange(of: runnerInstances) { _, _ in
+                            .onChange(of: runnerManager.runnerInstances) { _, _ in
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }
                             .overlay(alignment: .bottomTrailing) {
@@ -302,6 +292,7 @@ struct MusicStyleListView: View {
               let finalJSON = String(data: finalData, encoding: .utf8) else { return }
 
         save_config(finalJSON)
+        NotificationCenter.default.post(name: .projectConfigChanged, object: nil)
     }
 
     private func updateProject(_ updated: ProjectConfig) {
@@ -331,33 +322,10 @@ struct MusicStyleListView: View {
               let finalJSON = String(data: finalData, encoding: .utf8) else { return }
 
         save_config(finalJSON)
+        NotificationCenter.default.post(name: .projectConfigChanged, object: nil)
     }
 
-    private func runRunner(_ runner: RunnerConfig, in location: String, projectName: String, secrets: [SecretEntry]) {
-        let relevantSecrets = secrets.filter { $0.runnerName.isEmpty || $0.runnerName == runner.name }
-        let secretLog = relevantSecrets.map { "🔑 Injected secret: \($0.key)\n" }.joined()
-        let envPrefix = relevantSecrets.map { "\($0.key)=\($0.value.shellEscaped)" }.joined(separator: " ")
-        let enhancedCommand = envPrefix.isEmpty ? runner.command : "\(envPrefix) \(runner.command)"
 
-        let instance = RunnerInstance(
-            runnerName: runner.name,
-            projectName: projectName,
-            output: "\(secretLog)▶ [\(runner.name)] \(runner.command)\n\n",
-            isRunning: true
-        )
-        runnerInstances.append(instance)
-        selectedInstanceId = instance.id
-
-        guard !location.isEmpty else {
-            if let idx = runnerInstances.firstIndex(where: { $0.id == instance.id }) {
-                runnerInstances[idx].output += "⚠ No project location set\n"
-                runnerInstances[idx].isRunning = false
-            }
-            return
-        }
-
-        run_command_streaming(enhancedCommand, location, instance.id.uuidString)
-    }
 }
 
 struct ContentView: View {
@@ -375,9 +343,8 @@ struct ContentView: View {
         return "v\(version)-\(type)"
     }
 
-    private let menuItems: [MenuItem] = [
+    private static let menuItems: [MenuItem] = [
         MenuItem(name: "Apps", subtitle: "Manage applications", iconName: "square.grid.2x2.fill", color: .blue),
-        MenuItem(name: "Server", subtitle: "Server configuration", iconName: "server.rack", color: .green),
         MenuItem(name: "Docker", subtitle: "Container management", iconName: "shippingbox.fill", color: .orange),
         MenuItem(name: "Edit Configuration", subtitle: "Amend run settings", iconName: "apple.meditate", color: .red)
     ]
@@ -399,12 +366,12 @@ struct ContentView: View {
     }
 
     private var selectedMenuItem: MenuItem? {
-        menuItems.first { $0.id == selectedItem }
+        Self.menuItems.first { $0.id == selectedItem }
     }
 
     var body: some View {
         NavigationSplitView {
-            List(menuItems, selection: $selectedItem) { item in
+            List(Self.menuItems, selection: $selectedItem) { item in
                 HStack(spacing: 12) {
                     Image(systemName: item.iconName)
                         .font(.title3)
@@ -462,15 +429,20 @@ struct ContentView: View {
         .sheet(isPresented: $showConfigEditor) {
             ConfigEditorView(jsonText: $configJSON)
                 .onDisappear {
-                    selectedItem = menuItems.first?.id
+                    selectedItem = Self.menuItems.first?.id
                 }
         }
         .onAppear(perform: loadConfig)
+        .onReceive(NotificationCenter.default.publisher(for: .openEditProject)) { _ in
+            selectedItem = Self.menuItems.first?.id
+            NSApplication.shared.activate(ignoringOtherApps: true)
+        }
         .sheet(isPresented: $showCreateNew) {
             CreateNewProjectView()
                 .onDisappear {
                     loadConfig()
                     projectRefreshID = UUID()
+                    NotificationCenter.default.post(name: .projectConfigChanged, object: nil)
                 }
         }
     }

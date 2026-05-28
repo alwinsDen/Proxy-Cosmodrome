@@ -9,6 +9,8 @@ import SwiftUI
 struct ProjectRunners : View {
     var runners: [RunnerConfig] = []
     var onRunRunner: ((RunnerConfig) -> Void)?
+    var onRestartRunner: ((RunnerConfig) -> Void)?
+    var isRunnerRunning: ((RunnerConfig) -> Bool)?
     var onEdit: (() -> Void)?
     var onDelete: () -> Void
 
@@ -23,10 +25,15 @@ struct ProjectRunners : View {
     var body : some View {
         HStack {
             ForEach(Array(runners.enumerated()), id: \.element.id) { index, runner in
+                let isRunning = isRunnerRunning?(runner) ?? false
                 Button {
-                    onRunRunner?(runner)
+                    if isRunning {
+                        onRestartRunner?(runner)
+                    } else {
+                        onRunRunner?(runner)
+                    }
                 } label: {
-                    Image(systemName: runner.icon)
+                    Image(systemName: isRunning ? "arrow.clockwise.circle" : runner.icon)
                         .font(.system(size: 24))
                         .contentShape(Circle())
                         .foregroundStyle(runnerColors[index % runnerColors.count])

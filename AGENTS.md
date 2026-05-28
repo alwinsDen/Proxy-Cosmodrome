@@ -59,6 +59,21 @@ Bottom panel with tabbed multi-runner output (each runner click = new tab). Tabs
 - Rust: 2024 edition, snake_case, 4-space indent
 - Swift: 4-space indent, PascalCase types, camelCase props/fns
 
+## Menu Bar Extra
+
+`MenuBarExtra` scene in `Proxy_CosmodromeApp.swift` with yellow `circle.fill` SF Symbol icon.
+`MenuBarView` (`MenuBarManager.swift`) loads projects on appear, renders nested submenus per project.
+Each runner button calls `runnerManager.runRunner()`.
+"Edit Config" button posts `.openEditProject` notification with `projectID`; `ContentView` switches to Apps sidebar and `MusicStyleListView` sets `projectToEdit` to open the edit sheet.
+Single-process architecture — no separate binary, shares Rust FFI and RunnerManager state.
+
+## RunnerManager
+
+`RunnerManager.swift` — `ObservableObject` shared via `.environmentObject` across main window and menu bar.
+Holds `@Published runnerInstances: [RunnerInstance]` and `selectedInstanceId: UUID?`.
+Subscribes to `.commandOutput`/`.commandDone` notifications in `init`, updates instances on main thread.
+Provides `runRunner(_:location:projectName:secrets:)` (creates instance, calls `run_command_streaming`) and `removeInstance(id:)`.
+
 ## Dependencies
 
 - Rust: `swift-bridge` 0.1, `serde` 1, `serde_json` 1, `dirs` 5

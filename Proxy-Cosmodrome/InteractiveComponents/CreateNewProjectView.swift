@@ -108,7 +108,6 @@ struct ProjectConfig: Identifiable, Codable {
 
 enum ProjectCategory: String, CaseIterable {
     case app = "App"
-    case server = "Server"
     case docker = "Docker"
 }
 
