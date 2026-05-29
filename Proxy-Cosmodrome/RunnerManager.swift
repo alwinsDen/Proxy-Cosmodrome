@@ -42,7 +42,7 @@ class RunnerManager: ObservableObject {
         let instance = RunnerInstance(
             runnerName: runner.name,
             projectName: projectName,
-            output: "\(secretLog)▶ [\(runner.name)] \(runner.command)\n\n",
+            output: "\(secretLog)\(runner.command)\n\n",
             isRunning: true
         )
         runnerInstances.append(instance)

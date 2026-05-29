@@ -228,10 +228,8 @@ struct CreateNewProjectView: View {
                         HStack(spacing: 8) {
                             TextField("Name", text: $runner.name)
                                 .textFieldStyle(.roundedBorder)
-                                .frame(minWidth: 100)
-                            TextField("Command", text: $runner.command)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(minWidth: 180)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity)
                             Button {
                                 runners.removeAll { $0.id == runner.id }
                             } label: {
@@ -241,6 +239,13 @@ struct CreateNewProjectView: View {
                             .buttonStyle(.plain)
                             .help("Remove runner")
                         }
+                        TextEditor(text: $runner.command)
+                            .font(.body.monospaced())
+                            .frame(minHeight: 60, idealHeight: 80, maxHeight: 150)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.secondary.opacity(0.3))
+                            )
                         iconPicker(for: $runner)
                     }
                 }
