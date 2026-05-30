@@ -1,0 +1,43 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin, x86_64-apple-darwin
+
+      - name: Build Rust (release)
+        run: cargo build --target aarch64-apple-darwin --release
+
+      - name: Build Xcode (release)
+        run: |
+          xcodebuild build \
+            -project Proxy-Cosmodrome.xcodeproj \
+            -scheme Proxy-Cosmodrome \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create release archive
+        run: |
+          mkdir -p release
+          cp -r build/Release/Proxy-Cosmodrome.app release/
+          cd release && zip -r ../Proxy-Cosmodrome-${{ env.VERSION }}.zip Proxy-Cosmodrome.app
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ env.VERSION }}
+          files: Proxy-Cosmodrome-${{ env.VERSION }}.zip
+          generate_release_notes: true
