@@ -78,3 +78,7 @@ Provides `runRunner(_:location:projectName:secrets:)` (creates instance, calls `
 
 - Rust: `swift-bridge` 0.1, `serde` 1, `serde_json` 1, `dirs` 5
 - Swift SPM: `FontAwesomeSwiftUI`
+
+## Commit & Push
+
+When the user says "commit & push", run `git status`, `git diff`, and `git log --oneline -10` to understand the state, stage all changes with a concise commit message matching repo style, and push to the remote.
