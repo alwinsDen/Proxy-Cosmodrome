@@ -34,6 +34,9 @@ jobs:
             -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO
 
+      - name: Ad-hoc sign the app
+        run: codesign --force --deep --sign - build/Build/Products/Release/Proxy-Cosmodrome.app
+
       - name: Create release archive
         run: |
           mkdir -p release
