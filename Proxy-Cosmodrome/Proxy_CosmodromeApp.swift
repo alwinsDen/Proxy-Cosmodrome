@@ -27,7 +27,7 @@ struct Proxy_CosmodromeApp: App {
             MenuBarView()
                 .environmentObject(runnerManager)
         } label: {
-            Image(systemName: "circle.fill")
+            Image("MenuBarIcon")
         }
         .menuBarExtraStyle(.menu)
     }
