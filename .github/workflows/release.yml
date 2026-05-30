@@ -4,6 +4,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: macos-latest
@@ -26,13 +29,15 @@ jobs:
           xcodebuild build \
             -project Proxy-Cosmodrome.xcodeproj \
             -scheme Proxy-Cosmodrome \
+            -configuration Release \
+            -derivedDataPath build \
             -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Create release archive
         run: |
           mkdir -p release
-          cp -r build/Release/Proxy-Cosmodrome.app release/
+          cp -r build/Build/Products/Release/Proxy-Cosmodrome.app release/
           cd release && zip -r ../Proxy-Cosmodrome-${{ env.VERSION }}.zip Proxy-Cosmodrome.app
 
       - name: Create GitHub Release
