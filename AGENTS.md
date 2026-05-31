@@ -9,7 +9,7 @@ Rust first, then Xcode:
 ```bash
 cargo build --target aarch64-apple-darwin
 # release: cargo build --target aarch64-apple-darwin --release
-xcodebuild build -project Proxy-Cosmodrome.xcodeproj -scheme Proxy-Cosmodrome -destination 'platform=macOS'
+# Xcode build: use MCP xcode_BuildProject (not xcodebuild in bash)
 ```
 
 After editing Rust FFI in `src/lib.rs`, rebuild Rust to regenerate bridge code into `generated/` (via `build.rs`). `bridging-header.h` at project root imports the generated headers.
@@ -73,6 +73,10 @@ Single-process architecture — no separate binary, shares Rust FFI and RunnerMa
 Holds `@Published runnerInstances: [RunnerInstance]` and `selectedInstanceId: UUID?`.
 Subscribes to `.commandOutput`/`.commandDone` notifications in `init`, updates instances on main thread.
 Provides `runRunner(_:location:projectName:secrets:)` (creates instance, calls `run_command_streaming`) and `removeInstance(id:)`.
+
+## Tooling
+
+`opencode.json` configures an Xcode MCP bridge (`xcrun mcpbridge`). When MCP is connected, use Xcode MCP tools (e.g. `xcode_BuildProject`) for all Xcode operations. Do NOT fall back to `xcodebuild` in bash — the MCP tools give richer diagnostics (issue filtering, build logs, test list, preview rendering) and avoid shell escaping pitfalls. Rust builds (`cargo build`) and other non-Xcode commands should still use bash normally.
 
 ## Dependencies
 

@@ -17,7 +17,6 @@ struct RunnerConfig: Identifiable, Codable {
         "arrow.down.circle",
         "arrow.up.circle",
         "gearshape.circle",
-        "wrench.adjustable.circle"
     ]
 
     static let iconLabels: [String: String] = [
@@ -27,7 +26,6 @@ struct RunnerConfig: Identifiable, Codable {
         "arrow.down.circle": "Pull",
         "arrow.up.circle": "Push",
         "gearshape.circle": "Configure",
-        "wrench.adjustable.circle": "Tweak",
         "doc.circle": "Generate",
         "flag.circle": "Deploy",
     ]
