@@ -475,7 +475,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_TEAM = H825RTQ868;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -493,7 +493,7 @@
 					"$(PROJECT_DIR)/target/aarch64-apple-darwin/debug",
 					"$(PROJECT_DIR)/target/aarch64-apple-darwin/release",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
 				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
@@ -516,7 +516,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_TEAM = H825RTQ868;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -534,7 +534,7 @@
 					"$(PROJECT_DIR)/target/aarch64-apple-darwin/debug",
 					"$(PROJECT_DIR)/target/aarch64-apple-darwin/release",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
 				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
