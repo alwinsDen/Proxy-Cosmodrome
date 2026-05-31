@@ -20,6 +20,8 @@ struct RunnerInstance: Identifiable, Equatable {
     let projectName: String
     var output: String
     var isRunning: Bool
+    var pid: Int? = nil
+    var exitCode: Int? = nil
 }
 
 struct MenuItem: Identifiable, Hashable {
@@ -38,6 +40,24 @@ struct MusicStyleListView: View {
     @State private var projectToEdit: ProjectConfig?
     @State private var terminalHeight: CGFloat = 150
     @State private var terminalFontSize: CGFloat = 11
+    @State private var searchText: String = ""
+    @State private var statsTimer: Timer?
+
+    private var matchCount: Int {
+        guard !searchText.isEmpty,
+              let id = runnerManager.selectedInstanceId,
+              let instance = runnerManager.runnerInstances.first(where: { $0.id == id })
+        else { return 0 }
+        let text = instance.output
+        var count = 0
+        var start = text.startIndex
+        while start < text.endIndex {
+            guard let r = text.range(of: searchText, options: .caseInsensitive, range: start..<text.endIndex) else { break }
+            count += 1
+            start = r.upperBound
+        }
+        return count
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -161,10 +181,14 @@ struct MusicStyleListView: View {
                                         }
                                         .buttonStyle(.plain)
                                     }
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 5)
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 2)
                                 }
-                                .buttonStyle(.plain)
+                                .buttonBorderShape(.roundedRectangle(radius: 8))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(.gray, lineWidth: 1)
+                                )
                                 .background {
                                     if runnerManager.selectedInstanceId == instance.id {
                                         RoundedRectangle(cornerRadius: 5)
@@ -181,14 +205,51 @@ struct MusicStyleListView: View {
 
                     if let selectedId = runnerManager.selectedInstanceId,
                        let instance = runnerManager.runnerInstances.first(where: { $0.id == selectedId }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("Find in output…", text: $searchText)
+                                .textFieldStyle(.plain)
+                                .font(.caption)
+                                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in }
+                            if !searchText.isEmpty {
+                                Text("\(matchCount) matches")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .monospacedDigit()
+                                Button {
+                                    searchText = ""
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .overlay(alignment: .bottom) { Divider() }
+
                         ScrollViewReader { proxy in
                             ScrollView {
-                                Text(instance.output)
-                                    .font(.system(size: terminalFontSize, design: .monospaced))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .textSelection(.enabled)
-                                    .padding(8)
-                                    .id("bottom")
+                                if searchText.isEmpty {
+                                    Text(attributedOutput(instance.output).0)
+                                        .font(.system(size: terminalFontSize, design: .monospaced))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .textSelection(.enabled)
+                                        .padding(8)
+                                        .id("bottom")
+                                } else {
+                                    Text(highlightedOutput(instance.output, search: searchText))
+                                        .font(.system(size: terminalFontSize, design: .monospaced))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .textSelection(.enabled)
+                                        .padding(8)
+                                        .id("bottom")
+                                }
                             }
                             .frame(height: terminalHeight)
                             .background(Color(NSColor.textBackgroundColor))
@@ -196,36 +257,68 @@ struct MusicStyleListView: View {
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }
                             .overlay(alignment: .bottomTrailing) {
-                                HStack(spacing: 4) {
-                                    Button {
-                                        let newSize = max(6, terminalFontSize - 1)
-                                        terminalFontSize = newSize
-                                        saveTerminalFontSize(newSize)
-                                    } label: {
-                                        Image(systemName: "minus.magnifyingglass")
-                                            .font(.system(size: 15))
-                                            .frame(width: 22, height: 22)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .buttonStyle(.plain)
-                                    .help("Zoom out")
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    // if let selId = runnerManager.selectedInstanceId,
+                                    //    let statsStr = runnerManager.processStats[selId],
+                                    //    let data = statsStr.data(using: .utf8),
+                                    //    let stats = try? JSONSerialization.jsonObject(with: data) as? [String: String] {
+                                    //     HStack(spacing: 8) {
+                                    //         if let cpu = stats["cpu"] {
+                                    //             Text("CPU \(cpu)%")
+                                    //                 .font(.caption2)
+                                    //                 .foregroundStyle(.secondary)
+                                    //                 .monospacedDigit()
+                                    //         }
+                                    //         if let mem = stats["mem"] {
+                                    //             Text("MEM \(mem)%")
+                                    //                 .font(.caption2)
+                                    //                 .foregroundStyle(.secondary)
+                                    //                 .monospacedDigit()
+                                    //         }
+                                    //         if let uptime = stats["uptime"] {
+                                    //             Text(uptime)
+                                    //                 .font(.caption2)
+                                    //                 .foregroundStyle(.secondary)
+                                    //                 .monospacedDigit()
+                                    //         }
+                                    //     }
+                                    //     .padding(.horizontal, 8)
+                                    //     .padding(.vertical, 4)
+                                    //     .background(.ultraThinMaterial)
+                                    //     .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    // }
 
-                                    Button {
-                                        let newSize = min(24, terminalFontSize + 1)
-                                        terminalFontSize = newSize
-                                        saveTerminalFontSize(newSize)
-                                    } label: {
-                                        Image(systemName: "plus.magnifyingglass")
-                                            .font(.system(size: 15))
-                                            .frame(width: 22, height: 22)
-                                            .foregroundStyle(.secondary)
+                                    HStack(spacing: 4) {
+                                        Button {
+                                            let newSize = max(6, terminalFontSize - 1)
+                                            terminalFontSize = newSize
+                                            saveTerminalFontSize(newSize)
+                                        } label: {
+                                            Image(systemName: "minus.magnifyingglass")
+                                                .font(.system(size: 15))
+                                                .frame(width: 22, height: 22)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .help("Zoom out")
+
+                                        Button {
+                                            let newSize = min(24, terminalFontSize + 1)
+                                            terminalFontSize = newSize
+                                            saveTerminalFontSize(newSize)
+                                        } label: {
+                                            Image(systemName: "plus.magnifyingglass")
+                                                .font(.system(size: 15))
+                                                .frame(width: 22, height: 22)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .help("Zoom in")
                                     }
-                                    .buttonStyle(.plain)
-                                    .help("Zoom in")
+                                    .padding(6)
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
                                 }
-                                .padding(6)
-                                .background(.ultraThinMaterial)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
                                 .padding(12)
                             }
                         }
@@ -233,6 +326,16 @@ struct MusicStyleListView: View {
                 }
                 .overlay(alignment: .top) { Divider() }
             }
+        }
+        .onDisappear {
+            statsTimer?.invalidate()
+            statsTimer = nil
+        }
+        .onChange(of: runnerManager.selectedInstanceId) { _, newId in
+            updateStatsTimer(for: newId)
+        }
+        .onChange(of: runnerManager.runnerInstances) { _, _ in
+            updateStatsTimer(for: runnerManager.selectedInstanceId)
         }
     }
 
@@ -295,6 +398,18 @@ struct MusicStyleListView: View {
         NotificationCenter.default.post(name: .projectConfigChanged, object: nil)
     }
 
+    private func updateStatsTimer(for instanceId: UUID?) {
+        statsTimer?.invalidate()
+        statsTimer = nil
+        guard let id = instanceId,
+              let instance = runnerManager.runnerInstances.first(where: { $0.id == id }),
+              instance.isRunning,
+              instance.pid != nil else { return }
+        statsTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak runnerManager] _ in
+            runnerManager?.pollStats(for: id)
+        }
+    }
+
     private func updateProject(_ updated: ProjectConfig) {
         guard let index = projects.firstIndex(where: { $0.id == updated.id }) else { return }
         projects[index] = updated
@@ -325,6 +440,185 @@ struct MusicStyleListView: View {
         NotificationCenter.default.post(name: .projectConfigChanged, object: nil)
     }
 
+    // MARK: - ANSI Parsing
+
+    private static func standardColor(_ index: UInt8) -> Color {
+        switch index % 8 {
+        case 0: return .black
+        case 1: return .red
+        case 2: return .green
+        case 3: return .yellow
+        case 4: return .blue
+        case 5: return Color(red: 1, green: 0, blue: 1)
+        case 6: return .cyan
+        case 7: return .white
+        default: return .black
+        }
+    }
+
+    private static func brightColor(_ index: UInt8) -> Color {
+        switch index % 8 {
+        case 0: return Color(white: 0.5)
+        case 1: return Color(red: 1, green: 0.4, blue: 0.4)
+        case 2: return Color(red: 0.4, green: 1, blue: 0.4)
+        case 3: return Color(red: 1, green: 1, blue: 0.4)
+        case 4: return Color(red: 0.4, green: 0.4, blue: 1)
+        case 5: return Color(red: 1, green: 0.4, blue: 1)
+        case 6: return Color(red: 0.4, green: 1, blue: 1)
+        case 7: return .white
+        default: return .white
+        }
+    }
+
+    private static func color256(_ index: UInt8) -> Color {
+        switch index {
+        case 0...7: return standardColor(index)
+        case 8...15: return brightColor(index - 8)
+        case 16...231:
+            let n = Int(index - 16)
+            let r = n / 36
+            let g = (n / 6) % 6
+            let b = n % 6
+            return Color(
+                red: Double(r * 51) / 255,
+                green: Double(g * 51) / 255,
+                blue: Double(b * 51) / 255
+            )
+        case 232...255:
+            let gray = Double(index - 232) * 10 + 8
+            return Color(white: gray / 255)
+        default: return .black
+        }
+    }
+
+    private func applySGR(_ params: String, bold: inout Bool, italic: inout Bool, underline: inout Bool, fg: inout Color?, bg: inout Color?) {
+        guard !params.isEmpty else {
+            bold = false; italic = false; underline = false; fg = nil; bg = nil
+            return
+        }
+        let codes = params.split(separator: ";", omittingEmptySubsequences: false).map(String.init)
+        var i = 0
+        while i < codes.count {
+            guard let code = Int(codes[i]) else { i += 1; continue }
+            i += 1
+            switch code {
+            case 0: bold = false; italic = false; underline = false; fg = nil; bg = nil
+            case 1: bold = true
+            case 3: italic = true
+            case 4: underline = true
+            case 22: bold = false
+            case 23: italic = false
+            case 24: underline = false
+            case 30...37: fg = Self.standardColor(UInt8(code - 30))
+            case 38:
+                guard i < codes.count else { break }
+                if codes[i] == "5" {
+                    i += 1
+                    guard i < codes.count, let n = Int(codes[i]) else { break }
+                    fg = Self.color256(UInt8(n))
+                    i += 1
+                } else if codes[i] == "2" {
+                    i += 1
+                    let r = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    let g = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    let b = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    fg = Color(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255)
+                } else {
+                    i += 1
+                }
+            case 39: fg = nil
+            case 40...47: bg = Self.standardColor(UInt8(code - 40))
+            case 48:
+                guard i < codes.count else { break }
+                if codes[i] == "5" {
+                    i += 1
+                    guard i < codes.count, let n = Int(codes[i]) else { break }
+                    bg = Self.color256(UInt8(n))
+                    i += 1
+                } else if codes[i] == "2" {
+                    i += 1
+                    let r = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    let g = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    let b = i < codes.count ? Int(codes[i]) ?? 0 : 0; i += 1
+                    bg = Color(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255)
+                } else {
+                    i += 1
+                }
+            case 49: bg = nil
+            case 90...97: fg = Self.brightColor(UInt8(code - 90))
+            case 100...107: bg = Self.brightColor(UInt8(code - 100))
+            default: break
+            }
+        }
+    }
+
+    private func buildAttributed(_ text: String, bold: Bool, italic: Bool, underline: Bool, fg: Color?, bg: Color?) -> AttributedString {
+        var attr = AttributedString(text)
+        var font = Font.system(size: terminalFontSize, design: .monospaced)
+        if bold { font = font.bold() }
+        if italic { font = font.italic() }
+        attr.font = font
+        if underline { attr.underlineStyle = .single }
+        if let fg { attr.foregroundColor = fg }
+        if let bg { attr.backgroundColor = bg }
+        return attr
+    }
+
+    private func attributedOutput(_ output: String) -> (AttributedString, String) {
+        var result = AttributedString()
+        var plainText = ""
+        guard let pattern = try? NSRegularExpression(pattern: "\u{1B}\\[([0-9;]*)m") else {
+            let attr = AttributedString(output)
+            return (attr, output)
+        }
+        let nsRange = NSRange(output.startIndex..., in: output)
+        var lastEnd = output.startIndex
+
+        var bold = false
+        var italic = false
+        var underline = false
+        var fg: Color?
+        var bg: Color?
+
+        pattern.enumerateMatches(in: output, range: nsRange) { match, _, _ in
+            guard let match, let matchRange = Range(match.range, in: output) else { return }
+            if lastEnd < matchRange.lowerBound {
+                let segment = String(output[lastEnd..<matchRange.lowerBound])
+                result.append(buildAttributed(segment, bold: bold, italic: italic, underline: underline, fg: fg, bg: bg))
+                plainText += segment
+            }
+            let params = match.range(at: 1)
+            let paramsStr = params.location != NSNotFound ? String(output[Range(params, in: output)!]) : ""
+            applySGR(paramsStr, bold: &bold, italic: &italic, underline: &underline, fg: &fg, bg: &bg)
+            lastEnd = matchRange.upperBound
+        }
+
+        if lastEnd < output.endIndex {
+            let segment = String(output[lastEnd...])
+            result.append(buildAttributed(segment, bold: bold, italic: italic, underline: underline, fg: fg, bg: bg))
+            plainText += segment
+        }
+
+        return (result, plainText)
+    }
+
+    private func highlightedOutput(_ output: String, search: String) -> AttributedString {
+        guard !search.isEmpty else { return attributedOutput(output).0 }
+        var pair = attributedOutput(output)
+        var attributed = pair.0
+        let plainText = pair.1
+        let searchLower = search.lowercased()
+        let plainLower = plainText.lowercased()
+        var searchStart = plainLower.startIndex
+        while searchStart < plainLower.endIndex {
+            guard let found = plainLower[searchStart...].range(of: searchLower) else { break }
+            if let attrRange = Range<AttributedString.Index>(NSRange(found, in: plainText), in: attributed) {
+                attributed[attrRange].backgroundColor = Color.yellow
+            }
+            searchStart = found.upperBound
+        }
+        return attributed
+    }
 
 }
 
@@ -419,7 +713,9 @@ struct ContentView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button {} label: {
+                Button {
+                    test_trigger_click()
+                } label: {
                     Text("star")
                     Image(systemName: "star")
                         .font(.system(size: 10))

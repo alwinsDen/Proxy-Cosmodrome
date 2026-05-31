@@ -29,11 +29,14 @@ mod ffi {
         fn save_config(json: String) -> bool;
         fn run_command_streaming(command: String, working_dir: String, instance_id: String);
         fn kill_process(instance_id: String);
+        fn get_process_stats(pid: u32) -> String;
+        fn test_trigger_click();
     }
 
     extern "Swift" {
         fn on_command_output(instance_id: String, output: String);
-        fn on_command_done(instance_id: String);
+        fn on_command_done(instance_id: String, exit_code: i32);
+        fn on_process_started(instance_id: String, pid: u32);
     }
 }
 
@@ -96,13 +99,14 @@ fn run_command_streaming(command: String, working_dir: String, instance_id: Stri
             Ok(child) => child,
             Err(e) => {
                 ffi::on_command_output(instance_id.clone(), format!("ERROR: {}\n", e));
-                ffi::on_command_done(instance_id);
+                ffi::on_command_done(instance_id, -1);
                 return;
             }
         };
 
         let pid = child.id();
         RUNNING_PIDS.lock().unwrap().insert(instance_id.clone(), pid);
+        ffi::on_process_started(instance_id.clone(), pid);
 
         let stdout_handle = {
             let id = instance_id.clone();
@@ -140,12 +144,15 @@ fn run_command_streaming(command: String, working_dir: String, instance_id: Stri
             })
         };
 
-        child.wait().ok();
+        let exit_code = match child.wait() {
+            Ok(status) => status.code().unwrap_or(-1),
+            Err(_) => -1,
+        };
         let _ = stdout_handle.join();
         let _ = stderr_handle.join();
 
         RUNNING_PIDS.lock().unwrap().remove(&instance_id);
-        ffi::on_command_done(instance_id);
+        ffi::on_command_done(instance_id, exit_code);
     });
 }
 
@@ -157,4 +164,40 @@ fn kill_process(instance_id: String) {
             .arg(format!("-{}", pid))
             .status();
     }
+}
+
+fn get_process_stats(pid: u32) -> String {
+    println!("PROCESS PID: {}", pid.to_string());
+    let output = Command::new("ps")
+        .arg("-o")
+        .arg("pid,%cpu,%mem,etime")
+        .arg("-p")
+        .arg(pid.to_string())
+        .output();
+
+    match output {
+        Ok(out) => {
+            let stdout = String::from_utf8_lossy(&out.stdout);
+            let lines: Vec<&str> = stdout.lines().collect();
+            if lines.len() >= 2 {
+                let parts: Vec<&str> = lines[1].split_whitespace().collect();
+                if parts.len() >= 4 {
+                    return format!(
+                        r#"{{"cpu":"{}","mem":"{}","uptime":"{}"}}"#,
+                        parts[1], parts[2], parts[3]
+                    );
+                }
+                format!("ERROR: Failed to parse ps output: '{}'", lines[1])
+            } else if out.status.success() {
+                format!("ERROR: No process data for pid {}", pid)
+            } else {
+                format!("ERROR: ps exited with status {}", out.status)
+            }
+        }
+        Err(e) => format!("ERROR: {}", e),
+    }
+}
+
+fn test_trigger_click(){
+    println!("Swift-rust FFI test!");
 }
