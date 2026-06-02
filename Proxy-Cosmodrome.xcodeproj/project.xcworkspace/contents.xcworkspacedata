@@ -4,4 +4,11 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <Group
+      location = "group:Extensions"
+      name = "Extensions">
+      <FileRef
+         location = "group:Color+Hex.swift">
+      </FileRef>
+   </Group>
 </Workspace>

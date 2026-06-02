@@ -167,11 +167,11 @@ struct MusicStyleListView: View {
                                 } label: {
                                     HStack(spacing: 5) {
                                         Circle()
-                                            .fill(instance.isRunning ? Color.green : Color.gray)
+                                            .fill(instance.isRunning ? Color(hex: "#00C013") : Color(hex: "#FF0000"))
                                             .frame(width: 7, height: 7)
                                         Text(instance.runnerName)
                                             .font(.caption)
-                                            .fontWeight(runnerManager.selectedInstanceId == instance.id ? .semibold : .regular)
+                                            .fontWeight(.regular)
                                         Button {
                                             runnerManager.removeInstance(id: instance.id)
                                         } label: {
@@ -184,16 +184,16 @@ struct MusicStyleListView: View {
                                     .padding(.horizontal, 5)
                                     .padding(.vertical, 2)
                                 }
-                                .buttonBorderShape(.roundedRectangle(radius: 8))
+                                .buttonBorderShape(.roundedRectangle(radius: 4))
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(.gray, lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .stroke(.gray, lineWidth: 0.5)
                                 )
                                 .background {
                                     if runnerManager.selectedInstanceId == instance.id {
-                                        RoundedRectangle(cornerRadius: 5)
-                                            .fill(Color(NSColor.windowBackgroundColor))
-                                            .shadow(color: .black.opacity(0.08), radius: 1, y: 0.5)
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .fill(Color(.black))
+                                            //.shadow(color: .black.opacity(0.08), radius: 1, y: 0.5)
                                     }
                                 }
                             }

@@ -16,7 +16,7 @@ struct Proxy_CosmodromeApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(runnerManager)
-                .preferredColorScheme(.light)
+                .preferredColorScheme(.dark)
                 .onAppear {
                     if terminalManager == nil {
                         terminalManager = DetachedTerminalManager(runnerManager: runnerManager)
@@ -27,7 +27,7 @@ struct Proxy_CosmodromeApp: App {
         MenuBarExtra {
             MenuBarView()
                 .environmentObject(runnerManager)
-                .preferredColorScheme(.light)
+                .preferredColorScheme(.dark)
         } label: {
             Image("MenuBarIcon")
         }
