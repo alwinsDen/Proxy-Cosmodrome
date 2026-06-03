@@ -1,12 +1,24 @@
 {
   "images" : [
     {
-      "filename" : "cat-5-svgrepo-com 1.png",
+      "filename" : "menu-bar-dark-1x.png",
       "idiom" : "mac",
       "scale" : "1x"
     },
     {
-      "filename" : "cat-5-svgrepo-com 2.png",
+      "filename" : "menu-bar-dark-2x.png",
+      "idiom" : "mac",
+      "scale" : "2x"
+    },
+    {
+      "appearances" : [{ "appearance" : "luminosity", "value" : "dark" }],
+      "filename" : "menu-bar-light-1x.png",
+      "idiom" : "mac",
+      "scale" : "1x"
+    },
+    {
+      "appearances" : [{ "appearance" : "luminosity", "value" : "dark" }],
+      "filename" : "menu-bar-light-2x.png",
       "idiom" : "mac",
       "scale" : "2x"
     }
