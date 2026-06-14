@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 fn main() {
-    let out_dir = PathBuf::from("generated");
+    let out_dir = PathBuf::from("../generated");
 
     let bridges = vec!["src/lib.rs"];
     for path in &bridges {

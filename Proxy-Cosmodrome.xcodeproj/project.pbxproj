@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		ED2F2C402FA79795008B41F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ED2F2C3F2FA79795008B41F6 /* README.md */; };
 		EDCADCB22FAF27FB007482FC /* FontAwesomeSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EDCADCB12FAF27FB007482FC /* FontAwesomeSwiftUI */; };
-		EDF7E2702FB059AE005043AB /* Proxy-CosmodromeRustCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */; };
+		EDF7E2702FB059AE005043AB /*proxy_cosmodrome_rust_core.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF7E26B2FB059AE005043AB /*proxy_cosmodrome_rust_core.swift */; };
 		EDF7E2712FB059AE005043AB /* SwiftBridgeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,11 +36,11 @@
 		ED2F2C222FA790D3008B41F6 /* Proxy-CosmodromeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C2C2FA790D3008B41F6 /* Proxy-CosmodromeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Proxy-CosmodromeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2F2C3F2FA79795008B41F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		EDB9C54D2FB075B800352A0F /* libProxy_CosmodromeRustCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libProxy_CosmodromeRustCore.a; path = "target/aarch64-apple-darwin/debug/libProxy_CosmodromeRustCore.a"; sourceTree = "<group>"; };
-		EDB9C54F2FB077F400352A0F /* libProxy_CosmodromeRustCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libProxy_CosmodromeRustCore.a; path = "target/aarch64-apple-darwin/release/libProxy_CosmodromeRustCore.a"; sourceTree = "<group>"; };
+		EDB9C54D2FB075B800352A0F /* libproxy_cosmodrome_rust_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproxy_cosmodrome_rust_core.a; path = "target/aarch64-apple-darwin/debug/libproxy_cosmodrome_rust_core.a"; sourceTree = "<group>"; };
+		EDB9C54F2FB077F400352A0F /* libproxy_cosmodrome_rust_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproxy_cosmodrome_rust_core.a; path = "target/aarch64-apple-darwin/release/libproxy_cosmodrome_rust_core.a"; sourceTree = "<group>"; };
 		EDF7E0B02FB056F6005043AB /* bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bridging-header.h"; sourceTree = "<group>"; };
-		EDF7E26A2FB059AE005043AB /* Proxy-CosmodromeRustCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Proxy-CosmodromeRustCore.h"; sourceTree = "<group>"; };
-		EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Proxy-CosmodromeRustCore.swift"; sourceTree = "<group>"; };
+		EDF7E26A2FB059AE005043AB /*proxy_cosmodrome_rust_core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "proxy_cosmodrome_rust_core.h"; sourceTree = "<group>"; };
+		EDF7E26B2FB059AE005043AB /*proxy_cosmodrome_rust_core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "proxy_cosmodrome_rust_core.swift"; sourceTree = "<group>"; };
 		EDF7E26D2FB059AE005043AB /* SwiftBridgeCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftBridgeCore.h; sourceTree = "<group>"; };
 		EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridgeCore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,25 +117,25 @@
 		EDCADCB02FAF27F7007482FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EDB9C54F2FB077F400352A0F /* libProxy_CosmodromeRustCore.a */,
-				EDB9C54D2FB075B800352A0F /* libProxy_CosmodromeRustCore.a */,
+				EDB9C54F2FB077F400352A0F /* libproxy_cosmodrome_rust_core.a */,
+				EDB9C54D2FB075B800352A0F /* libproxy_cosmodrome_rust_core.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EDF7E26C2FB059AE005043AB /* Proxy-CosmodromeRustCore */ = {
+		EDF7E26C2FB059AE005043AB /*proxy_cosmodrome_rust_core */ = {
 			isa = PBXGroup;
 			children = (
-				EDF7E26A2FB059AE005043AB /* Proxy-CosmodromeRustCore.h */,
-				EDF7E26B2FB059AE005043AB /* Proxy-CosmodromeRustCore.swift */,
+				EDF7E26A2FB059AE005043AB /*proxy_cosmodrome_rust_core.h */,
+				EDF7E26B2FB059AE005043AB /*proxy_cosmodrome_rust_core.swift */,
 			);
-			path = "Proxy-CosmodromeRustCore";
+			path = "proxy_cosmodrome_rust_core";
 			sourceTree = "<group>";
 		};
 		EDF7E26F2FB059AE005043AB /* generated */ = {
 			isa = PBXGroup;
 			children = (
-				EDF7E26C2FB059AE005043AB /* Proxy-CosmodromeRustCore */,
+				EDF7E26C2FB059AE005043AB /*proxy_cosmodrome_rust_core */,
 				EDF7E26D2FB059AE005043AB /* SwiftBridgeCore.h */,
 				EDF7E26E2FB059AE005043AB /* SwiftBridgeCore.swift */,
 			);
@@ -304,7 +304,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\ncd \"${SRCROOT}\"\n\nif [[ -n \"${DEVELOPER_SDK_DIR:-}\" ]]; then\n  export LIBRARY_PATH=\"${DEVELOPER_SDK_DIR}/MacOSX.sdk/usr/lib:${LIBRARY_PATH:-}\"\nfi\n\nif [[ $CONFIGURATION == \"Release\" ]]; then\n    cargo build --target aarch64-apple-darwin --release\nelse\n    cargo build --target aarch64-apple-darwin\nfi\n";
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\ncd \"${SRCROOT}\"\n\nif [[ -n \"${DEVELOPER_SDK_DIR:-}\" ]]; then\n  export LIBRARY_PATH=\"${DEVELOPER_SDK_DIR}/MacOSX.sdk/usr/lib:${LIBRARY_PATH:-}\"\nfi\n\nif [[ $CONFIGURATION == \"Release\" ]]; then\n    cargo build -p proxy_cosmodrome_rust_core --target aarch64-apple-darwin --release\nelse\n    cargo build -p proxy_cosmodrome_rust_core --target aarch64-apple-darwin\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -313,7 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EDF7E2702FB059AE005043AB /* Proxy-CosmodromeRustCore.swift in Sources */,
+				EDF7E2702FB059AE005043AB /*proxy_cosmodrome_rust_core.swift in Sources */,
 				EDF7E2712FB059AE005043AB /* SwiftBridgeCore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -494,7 +494,7 @@
 					"$(PROJECT_DIR)/target/aarch64-apple-darwin/release",
 				);
 				MARKETING_VERSION = 1.3;
-				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
+				OTHER_LDFLAGS = "-lproxy_cosmodrome_rust_core";
 				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -536,7 +536,7 @@
 				);
 				MARKETING_VERSION = 1.3;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-lProxy_CosmodromeRustCore";
+				OTHER_LDFLAGS = "-lproxy_cosmodrome_rust_core";
 				OTHER_SWIFT_FLAGS = "-disable-actor-data-race-checks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alwinsden.Proxy-Cosmodrome";
 				PRODUCT_NAME = "$(TARGET_NAME)";

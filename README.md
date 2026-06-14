@@ -60,6 +60,6 @@ If you need to configure the Swift-Rust bridge from scratch:
 
 1. Set **Architectures → Release** to `arm64`
 2. Add **Library Search Paths** for the Rust build output (`target/aarch64-apple-darwin/debug` for Debug, `release` for Release)
-3. Add **Other Linker Flags** → `-lProxy_CosmodromeRustCore`
+3. Add **Other Linker Flags** → `-lproxy_cosmodrome_rust_core`
 4. Set **Bridging Header** → `$(SRCROOT)/bridging-header.h`
 5. Fix actor isolation error by setting **Default Actor Isolation** → `nonisolated`

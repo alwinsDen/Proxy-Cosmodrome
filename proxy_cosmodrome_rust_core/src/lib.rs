@@ -83,6 +83,7 @@ fn save_config(json: String) -> bool {
 fn run_command_streaming(command: String, working_dir: String, instance_id: String) {
     let shell = std::env::var("SHELL").unwrap_or_else(|_| "zsh".to_string());
     let full_command = format!("cd \"{}\" && {}", working_dir, command);
+    println!("Running command: {}", full_command);
 
     thread::spawn(move || {
         let mut child = match Command::new(&shell)

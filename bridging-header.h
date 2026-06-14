@@ -9,6 +9,6 @@
 #define BridgingHeader_h
 
 #include "./generated/SwiftBridgeCore.h"
-#include "./generated/Proxy-CosmodromeRustCore/Proxy-CosmodromeRustCore.h"
+#include "./generated/proxy_cosmodrome_rust_core/proxy_cosmodrome_rust_core.h"
 
 #endif /* BridgingHeader_h */
